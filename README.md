@@ -2,4 +2,15 @@
 
 A general IA for the GVG-AI competition
 
-Cambio de dani jeje
+El controlador tiene que estar en una carpeta así:
+
+```groovy
+- abc
+	|- Agent.java
+	|- MyAdditionalFile1.java
+	|- MyAdditionalFile2.java
+- controllers
+- core
+- ontology
+- tools
+```
