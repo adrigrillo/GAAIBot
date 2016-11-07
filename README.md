@@ -1,0 +1,4 @@
+# Práctica 2: Competición de Inteligencia Artifical Genérica aplicada a Videojue
+gos (2 Jugadores)
+
+A general IA for the GVG-AI competition
