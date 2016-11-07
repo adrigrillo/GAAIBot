@@ -65,8 +65,8 @@ public class TestMultiPlayer
 
         // 2. This plays a game in a level by the controllers. If one of the players is human, change the playerID passed
         // to the runOneGame method to be that of the human player (0 or 1).
-//        ArcadeMachine.runOneGame(game, level1, visuals, controllers, recordActionsFile, seed, 0);
-        
+        //ArcadeMachine.runOneGame(game, level1, visuals, controllers, recordActionsFile, seed, 0);
+
         // 3. This replays a game from an action file previously recorded
         //String readActionsFile = recordActionsFile;
         //ArcadeMachine.replayGame(game, level1, visuals, readActionsFile);
