@@ -53,11 +53,14 @@ public class Agent extends AbstractMultiPlayer {
     public Agent(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer, int playerID) {
         id = playerID;
         oppID = (id + 1) % stateObs.getNoPlayers();
+        // Saca el numero de jugadores en la partida
         no_players = stateObs.getNoPlayers();
 
         randomGenerator = new Random();
+        // Este array guarda el numero de acciones disponibles para cada jugador
         N_ACTIONS = new int[no_players];
 
+        // Este bucle lo que calcula es el numero de acciones disponibles para cada jugador
         action_mapping = new HashMap[no_players];
         r_action_mapping = new HashMap[no_players];
         for (int j = 0; j < no_players; j++) {
@@ -72,7 +75,7 @@ public class Agent extends AbstractMultiPlayer {
 
             N_ACTIONS[j] = stateObs.getAvailableActions(j).size();
         }
-
+        // Iniciamos el individuo al azar
         initGenome(stateObs);
     }
 
@@ -115,11 +118,18 @@ public class Agent extends AbstractMultiPlayer {
     }
 
     private void initGenome(StateObservationMulti stateObs) {
-
+        // Saca el numero maximo de acciones comparando cada jugador
         int max = 0;
         for (int i = 0; i < stateObs.getNoPlayers(); i++) {
             if (N_ACTIONS[i] > max) max = N_ACTIONS[i];
         }
+        /*
+            genoma[1][2][3][4]:
+            1. Crea las poblaciones para cada jugador, en este caso 2
+                2. Para cada jugador, hay una lista de N posibles acciones.
+                    3. Por cada acción posible hay una población de M individuos (Tamaño de población)
+                        4. Se crea una lista de X acciones para cada individuo de las poblaciones: profundidad de la simulación
+         */
         genome = new int[stateObs.getNoPlayers()][max][POPULATION_SIZE][SIMULATION_DEPTH];
 
 
