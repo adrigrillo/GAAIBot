@@ -14,3 +14,11 @@ El controlador tiene que estar en una carpeta así:
 - ontology
 - tools
 ```
+
+## Consideraciones del programa
+
+* El paquete del agente debe llamarse como el usuario que se registra en la web de la competición.
+* Implementación en una clase de Java que extiende de core.player.AbstractPlayer.java.
+* Implementar al menos los siguientes métodos:
+	+ Constructor público que recive: StateObservation, ElapsedCPUTimer.
+	+ Sobre-escritura del método __act__ que recibe los parámetros: StateObservation, ElapsedCPUTimer, y devuelve una acción del tipo enumerado Types.ACTIONS.
