@@ -21,10 +21,14 @@ public class TestMultiPlayer
         String sampleOLMCTSController = "controllers.multiPlayer.sampleOLMCTS.Agent";
         String sampleGAController = "controllers.multiPlayer.sampleGA.Agent";
         String humanController = "controllers.multiPlayer.human.Agent";
+        String darwinerController = "darwinner.Agent";
 
         //Set here the controllers used in the games (need 2 separated by space).
         //String controllers = doNothingController + " " + doNothingController;
-        String controllers = sampleGAController + " " + sampleGAController;
+        //String controllers = sampleGAController + " " + sampleGAController;
+        
+        // Controladores: jugador y enemigo
+        String controllers = darwinerController + " " + darwinerController;
 
         //Available games:
         String gamesPath = "examples/2player/";
@@ -53,20 +57,32 @@ public class TestMultiPlayer
         int seed = new Random().nextInt();
 
         //Game and level to play
-        int gameIdx = 9;
+        // Índice del juego a ejecutar
+        int gameIdx = 1;
+        // Índice del nivel del juego
         int levelIdx = 0; //level names from 0 to 4 (game_lvlN.txt).
+        
         String game = gamesPath + games[gameIdx] + ".txt";
         String level1 = gamesPath + games[gameIdx] + "_lvl" + levelIdx +".txt";
 
         String recordActionsFile = null;//"actions_" + games[gameIdx] + "_lvl" + levelIdx + "_" + seed + ".txt"; //where to record the actions executed. null if not to save.
 
+        /*
+         * Jugador: humano
+         */
         // 1. This starts a game, in a level, played by two humans.
         //ArcadeMachine.playOneGameMulti(game, level1, recordActionsFile, seed);
 
+        /*
+         * Jugador: indicado por controllers
+         */
         // 2. This plays a game in a level by the controllers. If one of the players is human, change the playerID passed
         // to the runOneGame method to be that of the human player (0 or 1).
         ArcadeMachine.runOneGame(game, level1, visuals, controllers, recordActionsFile, seed, 0);
 
+        /*
+         * Repetición de jugadas almacenados
+         */
         // 3. This replays a game from an action file previously recorded
         //String readActionsFile = recordActionsFile;
         //ArcadeMachine.replayGame(game, level1, visuals, readActionsFile);
