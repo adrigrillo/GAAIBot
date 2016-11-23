@@ -5,6 +5,9 @@ import core.player.AbstractMultiPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 
+import java.time.Clock;
+import java.util.ArrayList;
+
 /**
  * Created by adria on 14/11/2016.
  */
@@ -16,6 +19,18 @@ public class Agent extends AbstractMultiPlayer {
      * @param playerID Id del jugador
      */
     public Agent(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer, int playerID){
+
+        // Array de acciones
+        ArrayList<ontology.Types.ACTIONS> acciones = stateObs.getAvailableActions(playerID);
+        int vida = stateObs.getAvatarHealthPoints();
+
+        //vida
+        System.out.println("Player "+playerID + " Vida: "+vida);
+
+        for(int i=0;i<acciones.size();i++){
+            System.out.println(acciones.get(i).toString());
+        }
+
 
     }
 
