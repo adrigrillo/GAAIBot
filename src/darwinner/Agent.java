@@ -12,6 +12,9 @@ import java.util.ArrayList;
  * Created by adria on 14/11/2016.
  */
 public class Agent extends AbstractMultiPlayer {
+
+    public ArrayList<ontology.Types.ACTIONS> acciones;
+
     /**
      * Metodo que es el constructor del agente, aqui debemos inicializar la poblacion
      * @param stateObs Estado de observacion en el turno actual
@@ -21,7 +24,7 @@ public class Agent extends AbstractMultiPlayer {
     public Agent(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer, int playerID){
 
         // Array de acciones
-        ArrayList<ontology.Types.ACTIONS> acciones = stateObs.getAvailableActions(playerID);
+        acciones = stateObs.getAvailableActions(playerID);
         int vida = stateObs.getAvatarHealthPoints();
 
         //vida
@@ -30,8 +33,6 @@ public class Agent extends AbstractMultiPlayer {
         for(int i=0;i<acciones.size();i++){
             System.out.println(acciones.get(i).toString());
         }
-
-
     }
 
     /**
@@ -42,7 +43,10 @@ public class Agent extends AbstractMultiPlayer {
      * @return
      */
     public Types.ACTIONS act(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer){
-        return null;
+
+        int accion_aleatoria = (int)(Math.random()*5);
+        System.out.println("Accion: "+accion_aleatoria + " | Puntuacion: "+stateObs.getGameScore());
+        return acciones.get(accion_aleatoria);
     }
 
 }
