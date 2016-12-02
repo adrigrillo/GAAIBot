@@ -25,4 +25,4 @@ El controlador tiene que estar en una carpeta así:
 	
 
 ## Colonia de hormigas
-Voy a leeme este (árticulo)[http://www.site.uottawa.ca/~sshar009/seal08.pdf] y veré si puedo aplicarlo.
+Voy a leeme este [paper](http://www.site.uottawa.ca/~sshar009/seal08.pdf) y veré si puedo aplicarlo.
