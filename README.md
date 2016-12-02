@@ -22,3 +22,7 @@ El controlador tiene que estar en una carpeta así:
 * Implementar al menos los siguientes métodos:
 	+ Constructor público que recive: StateObservation, ElapsedCPUTimer.
 	+ Sobre-escritura del método __act__ que recibe los parámetros: StateObservation, ElapsedCPUTimer, y devuelve una acción del tipo enumerado Types.ACTIONS.
+	
+
+## Colonia de hormigas
+Voy a leeme este (árticulo)[http://www.site.uottawa.ca/~sshar009/seal08.pdf] y veré si puedo aplicarlo.
