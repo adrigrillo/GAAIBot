@@ -15,7 +15,7 @@ public class TestMultiPlayer
         String darwinerController = "darwinner.Agent";
 
         // Controladores: jugador y enemigo
-        String controllers = darwinerController + " " + darwinerController;
+        String controllers = darwinerController + " " + sampleGAController;
 
         //Available games:
         String gamesPath = "examples/2player/";
