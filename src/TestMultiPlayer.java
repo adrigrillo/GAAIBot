@@ -36,7 +36,7 @@ public class TestMultiPlayer
 
         //Game and level to play
         // Indice del juego a ejecutar
-        int gameIdx = 1;
+        int gameIdx = 34;
         // Indice del nivel del juego
         int levelIdx = 0; //level names from 0 to 4 (game_lvlN.txt).
         
@@ -45,6 +45,10 @@ public class TestMultiPlayer
 
         // Con esto guardamos los resultados en un archivo, mas facil para ver que hace
         String recordActionsFile = "SalidaJuegos/Movimientos_" + games[gameIdx] + "_nivel" + levelIdx + "_" + seed + ".txt"; //where to record the actions executed. null if not to save.
+
+
+        // para que se vea lo que hace.
+        ArcadeMachine.runOneGame(game, level1, visuals, controllers, recordActionsFile, seed, 0);
 
         /*
          * Jugador: humano
@@ -57,7 +61,8 @@ public class TestMultiPlayer
          * 2. This plays a game in a level by the controllers. If one of the players is human, change the playerID passed
          * to the runOneGame method to be that of the human player (0 or 1).
          * /
-        //ArcadeMachine.runOneGame(game, level1, visuals, controllers, recordActionsFile, seed, 0);
+
+        ArcadeMachine.runOneGame(game, level1, visuals, controllers, recordActionsFile, seed, 0);
 
         /*
          * Repeticion de jugadas almacenados
