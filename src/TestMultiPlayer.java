@@ -13,9 +13,10 @@ public class TestMultiPlayer
         String sampleGAController = "controllers.multiPlayer.sampleGA.Agent";
         String humanController = "controllers.multiPlayer.human.Agent";
         String darwinerController = "darwinner.Agent";
+        String darwinerImpController = "darwinerSample.Agent";
 
         // Controladores: jugador y enemigo
-        String controllers = darwinerController + " " + sampleGAController;
+        String controllers = darwinerImpController + " " + randomController;
 
         //Available games:
         String gamesPath = "examples/2player/";
@@ -87,7 +88,7 @@ public class TestMultiPlayer
          * Si poneis saveActions = true guardara la salida que se produce, se guardan
          * en la carpeta SalidaJuegos
          */
-        int N = 2, L = 1, M = 1;
+        /*int N = 2, L = 1, M = 1;
         boolean saveActions = true;
         String[] levels = new String[L];
         String[] actionFiles = new String[L*M];
@@ -102,7 +103,7 @@ public class TestMultiPlayer
                         actionFiles[actionIdx++] = "SalidaJuegos/Movimientos_game" + i + "_nivel_" + j + "_partida_" + k + ".txt";
             }
             ArcadeMachine.runGames(game, levels, M, controllers, saveActions? actionFiles:null);
-        }
+        }*/
 
         //6. This plays a round robin style tournament between multiple controllers, in N games, first L levels, M times each.
         // Controllers are swapped for each match as well. Actions to file optional (set saveActions to true).
