@@ -1,4 +1,4 @@
-package darwinner;
+package darwinnerAntColony;
 
 import core.game.StateObservationMulti;
 import core.player.AbstractMultiPlayer;
