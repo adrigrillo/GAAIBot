@@ -14,7 +14,19 @@ import java.util.ArrayList;
 public class Agent extends AbstractMultiPlayer {
 
     public ArrayList<ontology.Types.ACTIONS> acciones;
-    ArrayList<int[]> poblacion = new ArrayList<int[]>();
+    //ArrayList<int[]> poblacion = new ArrayList<int[]>();
+    //<int[]> torneo = new ArrayList<int[]>();
+
+    //Variables
+    private StateObservationMulti[] estados;
+    private String[] poblacion;
+    private String[] torneo;
+    private int poblacion_size = 30; //Tamaño problacion
+    private String cromosoma = ""; //4 forwards + accion
+    private int genes = 5;
+    private int i=0;
+    private String hijo1="";
+    private String hijo2="";
 
     /**
      * Metodo que es el constructor del agente, aqui debemos inicializar la poblacion
@@ -24,20 +36,19 @@ public class Agent extends AbstractMultiPlayer {
      */
     public Agent(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer, int playerID){
 
-        //Variables
-        int[] cromosoma = new int[3]; //4 forwards + accion
-        int poblacion_size = 5; //Tamaño problacion
-
-
+        poblacion = new String[poblacion_size];
+        torneo = new String[poblacion_size];
+        estados = new StateObservationMulti[genes];
         acciones = stateObs.getAvailableActions(playerID); //Array de acciones
 
         //Generacion de poblacion inicial
-        for(int i = 0 ; i < poblacion_size ; i++){
-            for(int j = 0 ; j < cromosoma.length ; j++ ){
-                cromosoma[j] = (int)(Math.random()*acciones.size());
+        for(int p = 0 ; p < poblacion_size ; p++){
+            cromosoma = "";
+            for(int g = 0 ; g < genes ; g++ ){
+                cromosoma += ((int)(Math.random()*acciones.size()));
             }
             //System.out.print(cromosoma[0]+","+cromosoma[1]+","+cromosoma[2]+","+cromosoma[3]+","+cromosoma[4]+"\n");
-            poblacion.add(cromosoma);
+            poblacion[p]=cromosoma;
 
         }
 
@@ -59,63 +70,81 @@ public class Agent extends AbstractMultiPlayer {
      */
     public Types.ACTIONS act(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer){
 
-        //tarda demasiado, descalifica al agente.
-        ArrayList<int[]> torneo = new ArrayList<int[]>();
+
         int mejor_fitness = 0;
         int fitness_individuo = 0;
         int ganador = 0;
         int random = 0;
         double mutacion = 0.01;
-        int torneo_size = 3;
+        int torneo_size = 4;
         int accion_elegida = 0;
 
         //Algoritmo genetico
-        for(int c=0;c<5;c++){
+        for(int c=0;c<50;c++){
             //Torneo
-            for(int p=0;p<poblacion.size();p++){
+            for(int p=0;p<poblacion.length;p++){
                 for(int t=0;t<torneo_size;t++){
-                    random = (int)(Math.random()*poblacion.size());
-                    fitness_individuo = evaluacion(poblacion.get(random),stateObs);
+                    random = (int)(Math.random()*poblacion.length);
+                    //System.out.println(poblacion[random]);
+                    //fitness_individuo = evaluacion(poblacion[random],stateObs);
+
                     if(mejor_fitness<fitness_individuo){
                         mejor_fitness = fitness_individuo;
                         ganador = random;
-                        System.out.println(mejor_fitness);
+
                     }
                 }
-                torneo.add(poblacion.get(ganador));
+                torneo[p]=poblacion[ganador];
             }
+
+            //Cruce
+            //i = 0;
+            /*while (i < poblacion.length){
+                hijo1 = "";
+                hijo2 = "";
+                /*for(int g = 0;g<genes;g++){
+                    //random = (int)(Math.random());
+                    //System.out.println(random);
+
+                }
+
+                i++;
+            }*/
+
+
+
+
         }
         //System.out.println((poblacion.get(ganador))[0]);
-        poblacion.clear();
-        poblacion = (ArrayList)torneo.clone();
+
+        poblacion = torneo.clone();
         //torneo.clear();
         return acciones.get(accion_elegida);
     }
 
-    public int evaluacion(int[] individuo,StateObservationMulti stateObs){
+    public int evaluacion(String individuo,StateObservationMulti stateObs){
 
         // SIN TERMINAR, problemas con los fordwards
         int fitness = 0;
         int score = 0;
 
         //Estado actual
-        ArrayList<StateObservationMulti> estados = new ArrayList<StateObservationMulti>();
-        estados.add(stateObs.copy());
-
+        estados[0] = stateObs.copy();
         //Estados futuros
-        for(int e = 0 ; e < individuo.length ; e++){
-            estados.add(estados.get(e).copy());
-            estados.get(e).advance(acciones.get(individuo[e]));
+        for(int e = 1 ; e < genes ; e++){
+            estados[e]=estados[e-1].copy();
+            estados[e-1].advance(acciones.get((int)(individuo.charAt(e))-48));
         }
 
+        //System.out.println();
         //Ponderacion individuo
-        for(int i = 0;i < estados.size(); i++){
-            score+=estados.get(i).getGameScore();
+        for(int i = 0;i < estados.length; i++){
+            score+=estados[i].getGameScore();
         }
 
         //System.out.println(score);
 
-        return (int)(Math.random()*poblacion.size()); // esto solo es una prueba
+        return (int)(Math.random()*poblacion_size); // esto solo es una prueba
     }
 
 }

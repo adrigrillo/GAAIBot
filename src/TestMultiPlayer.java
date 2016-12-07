@@ -14,9 +14,11 @@ public class TestMultiPlayer
         String humanController = "controllers.multiPlayer.human.Agent";
         String darwinerController = "darwinner.Agent";
         String darwinerImpController = "darwinerSample.Agent";
+        String darwinnerDani = "darwinnerGeneticNew.Agent";
 
         // Controladores: jugador y enemigo
-        String controllers = darwinerImpController + " " + randomController;
+        //String controllers = darwinerImpController + " " + randomController;
+        String controllers = darwinnerDani + " " + randomController;
 
         //Available games:
         String gamesPath = "examples/2player/";
