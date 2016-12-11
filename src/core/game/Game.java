@@ -533,7 +533,6 @@ public abstract class Game
     	SpriteData data = new SpriteData();
     	data.name = sc.identifier;
     	data.type = sc.referenceClass;
-    	data.isSingleton = Boolean.parseBoolean(sc.parameters.get("singleton").toLowerCase());
     	
     	VGDLSprite sprite = VGDLFactory.GetInstance().createSprite(sc, new Vector2d(), new Dimension(1, 1));
     	switch(getSpriteCategory(sprite)){
@@ -1508,6 +1507,12 @@ public abstract class Game
         if(ef.count) {
             for (int i = 0; i < no_counters; i++) {
                 this.counter[i] += ef.getCounter(i);
+            }
+        }
+
+        if(ef.countElse) {
+            for (int i = 0; i < no_counters; i++) {
+                this.counter[i] += ef.getCounterElse(i);
             }
         }
     }

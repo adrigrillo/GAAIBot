@@ -14,12 +14,12 @@ public class CompetitionParameters
     /**
      * Milliseconds allowed per controller action.
      */
-    public static int ACTION_TIME = 1000; //Original 40 ms
+    public static int ACTION_TIME = 40;
 
     /**
      * Milliseconds for controller disqualification, if it returns an action after this time.
      */
-    public static int ACTION_TIME_DISQ = 4000; //Original 50 ms
+    public static int ACTION_TIME_DISQ = 50;
 
     /**
      * Milliseconds allowed for controller initialization.
@@ -45,6 +45,21 @@ public class CompetitionParameters
      * Milliseconds allowed for level generator to initialize
      */
     public static int LEVEL_INITIALIZATION_TIME = 60000;
+    
+    /**
+     * Milliseconds allowed for the rule generator to generate rules
+     */
+    public static int RULE_ACTION_TIME = 1800000*10;
+    
+    /**
+     * Milliseconds allowed for the rule generator disqualification, if it returns rules after this time.
+     */
+    public static int RULE_ACTION_TIME_DISQ = 21600000;
+    
+    /**
+     * Milliseconds allowed for rule generator to initialize
+     */
+    public static int RULE_INITIALIZATION_TIME = 60000;
     
     /**
      * Number of repetition during the optimization operation
