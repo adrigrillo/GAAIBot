@@ -47,7 +47,7 @@ public class TestMultiPlayer
         String level1 = gamesPath + games[gameIdx] + "_lvl" + levelIdx +".txt";
 
         // Con esto guardamos los resultados en un archivo, mas facil para ver que hace
-        String recordActionsFile = "SalidaJuegos/Movimientos_" + games[gameIdx] + "_nivel" + levelIdx + "_" + seed + ".txt"; //where to record the actions executed. null if not to save.
+        String recordActionsFile = "outputGames/Movimientos_" + games[gameIdx] + "_nivel" + levelIdx + "_" + seed + ".txt"; //where to record the actions executed. null if not to save.
 
 
         // para que se vea lo que hace.
@@ -88,7 +88,7 @@ public class TestMultiPlayer
          * - En los primero L niveles (Maximo 5 que son los que hay por juego)
          * - M veces cada uno (Aquí no hay limite, pero tener en cuenta que se hace largo)
          * Si poneis saveActions = true guardara la salida que se produce, se guardan
-         * en la carpeta SalidaJuegos
+         * en la carpeta outputGames
          */
         /*int N = 2, L = 1, M = 1;
         boolean saveActions = true;
@@ -102,7 +102,7 @@ public class TestMultiPlayer
                 levels[j] = gamesPath + games[i] + "_lvl" + j +".txt";
                 if(saveActions)
                     for(int k = 0; k < M; ++k)
-                        actionFiles[actionIdx++] = "SalidaJuegos/Movimientos_game" + i + "_nivel_" + j + "_partida_" + k + ".txt";
+                        actionFiles[actionIdx++] = "outputGames/Movimientos_game" + i + "_nivel_" + j + "_partida_" + k + ".txt";
             }
             ArcadeMachine.runGames(game, levels, M, controllers, saveActions? actionFiles:null);
         }*/
