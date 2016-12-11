@@ -1,37 +1,60 @@
+/**************************************************************************************************
+ * Autores:
+ * 		Rubén Rodríguez - 100303579@alumnos.uc3m.es
+ * 		Raúl López Rayo - 100073776@alumnos.uc3m.es
+ * 		Daniel Jerez Garrido - 100303628@alumnos.uc3m.es
+ * 		Juan Poblete Sandoval - 100303554@alumnos.uc3m.es
+ * 		Luis Buceta Ojeda - 100303573@alumnos.uc3m.es
+ * 		Adrián Rodríguez Grillo - 100316457@alumnos.uc3m.es
+ * Algoritmos genéticos y evolutivos
+ * Práctica 2: Competición de Inteligencia Artificial Genérica aplicada a Videojuegos (2 Jugadores)
+ *************************************************************************************************/
+
 import java.util.Random;
 import core.ArcadeMachine;
 
 public class TestMultiPlayer
 {
     public static void main(String[] args) {
-        //Available controllers:
+
+        //Available sample controllers:
         String doNothingController = "controllers.multiPlayer.doNothing.Agent";
-        String randomController = "controllers.multiPlayer.sampleRandom.Agent";
-        String oneStepController = "controllers.multiPlayer.sampleOneStepLookAhead.Agent";
+        String humanController = "controllers.multiPlayer.human.Agent";
+        String replayerControlloer = "controllers.multiPlayer.replayer.Agent";
+        String sampleGAController = "controllers.multiPlayer.sampleGA.Agent";
         String sampleMCTSController = "controllers.multiPlayer.sampleMCTS.Agent";
         String sampleOLMCTSController = "controllers.multiPlayer.sampleOLMCTS.Agent";
-        String sampleGAController = "controllers.multiPlayer.sampleGA.Agent";
-        String humanController = "controllers.multiPlayer.human.Agent";
+        String oneStepController = "controllers.multiPlayer.sampleOneStepLookAhead.Agent";
+        String randomController = "controllers.multiPlayer.sampleRandom.Agent";
+        
+        // Controladores desarrollados
+        // Controlador del agente que se va a entregar
+        // TODO: crear paquete con el nombre "darwinner" cuyo contenido es igual al del paquete elegido para la entrega
         String darwinerController = "darwinner.Agent";
-        String darwinerImpController = "darwinerSample.Agent";
-        String darwinnerDani = "darwinnerGeneticNew.Agent";
+        // Controlador del Algoritmo Genético hecho desde 0
+        String darwinnerGeneticNew = "darwinnerGeneticNew.Agent";
+        // Controlador del Algoritmo Genético de ejemplo adaptado
+        String darwinnerSample = "darwinnerSample.Agent";
+        // Controlador de Colonia de Hormigas
+        String darwinnerAntColony = "darwinnerAntColony.Agent";
 
-        // Controladores: jugador y enemigo
-        //String controllers = darwinerImpController + " " + randomController;
-        String controllers = darwinnerDani + " " + randomController;
+        // Controladores a de la partida
+        String playerOne = darwinnerGeneticNew;
+        String playerTwo = randomController;
+        String controllers = playerOne + " " + playerTwo;
 
         //Available games:
         String gamesPath = "examples/2player/";
 
         //All public games
         String games [] = new String[]{"accelerator", "akkaarrh", "asteroids", "beekeeper", "bombergirl",     // 0-4
-                "breedingdragons", "captureflag", "competesokoban", "copsNrobbers", "donkeykong",   // 5-9
-                "dragonattack", "drowning", "egghunt", "fatty", "firetruck",                        // 10-14
-                "football", "ghostbusters", "gotcha", "isawsanta", "klax",                          // 15-19
-                "mimic", "minesweeper", "minions", "oopsbrokeit", "reflection",                     // 20-24
-                "rivalry", "romeoNjuliet", "samaritan", "sokoban", "steeplechase",                  // 25-29
-                "teamescape", "thebridge", "trainride", "treasuremap", "tron",                      // 30-34
-                "upgrade-x", "uphigh", "warzone", "watchout", "wheelme"};                           // 35-39
+                "breedingdragons", "captureflag", "competesokoban", "copsNrobbers", "donkeykong",   		  // 5-9
+                "dragonattack", "drowning", "egghunt", "fatty", "firetruck",                        		  // 10-14
+                "football", "ghostbusters", "gotcha", "isawsanta", "klax",                          		  // 15-19
+                "mimic", "minesweeper", "minions", "oopsbrokeit", "reflection",                     		  // 20-24
+                "rivalry", "romeoNjuliet", "samaritan", "sokoban", "steeplechase",                  		  // 25-29
+                "teamescape", "thebridge", "trainride", "treasuremap", "tron",                      		  // 30-34
+                "upgrade-x", "uphigh", "warzone", "watchout", "wheelme"};                           		  // 35-39
 
         //Other settings
         boolean visuals = true;
@@ -50,8 +73,7 @@ public class TestMultiPlayer
         String recordActionsFile = "outputGames/Movimientos_" + games[gameIdx] + "_nivel" + levelIdx + "_" + seed + ".txt"; //where to record the actions executed. null if not to save.
 
 
-        // para que se vea lo que hace.
-        ArcadeMachine.runOneGame(game, level1, visuals, controllers, recordActionsFile, seed, 0);
+        // Ejecución de la partida
 
         /*
          * Jugador: humano
@@ -63,7 +85,7 @@ public class TestMultiPlayer
          *
          * 2. This plays a game in a level by the controllers. If one of the players is human, change the playerID passed
          * to the runOneGame method to be that of the human player (0 or 1).
-         * /
+         */
 
         ArcadeMachine.runOneGame(game, level1, visuals, controllers, recordActionsFile, seed, 0);
 

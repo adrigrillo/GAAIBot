@@ -1,3 +1,15 @@
+/**************************************************************************************************
+ * Autores:
+ * 		Rubén Rodríguez - 100303579@alumnos.uc3m.es
+ * 		Raúl López Rayo - 100073776@alumnos.uc3m.es
+ * 		Daniel Jerez Garrido - 100303628@alumnos.uc3m.es
+ * 		Juan Poblete Sandoval - 100303554@alumnos.uc3m.es
+ * 		Luis Buceta Ojeda - 100303573@alumnos.uc3m.es
+ * 		Adrián Rodríguez Grillo - 100316457@alumnos.uc3m.es
+ * Algoritmos genéticos y evolutivos
+ * Práctica 2: Competición de Inteligencia Artificial Genérica aplicada a Videojuegos (2 Jugadores)
+ *************************************************************************************************/
+
 package darwinnerGeneticNew;
 
 import core.game.StateObservationMulti;
