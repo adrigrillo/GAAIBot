@@ -1,13 +1,13 @@
 /**************************************************************************************************
  * Autores:
- * 		Rubén Rodríguez - 100303579@alumnos.uc3m.es
- * 		Raúl López Rayo - 100073776@alumnos.uc3m.es
+ * 		Ruben Rodriguez - 100303579@alumnos.uc3m.es
+ * 		Raul Lopez Rayo - 100073776@alumnos.uc3m.es
  * 		Daniel Jerez Garrido - 100303628@alumnos.uc3m.es
  * 		Juan Poblete Sandoval - 100303554@alumnos.uc3m.es
  * 		Luis Buceta Ojeda - 100303573@alumnos.uc3m.es
- * 		Adrián Rodríguez Grillo - 100316457@alumnos.uc3m.es
- * Algoritmos genéticos y evolutivos
- * Práctica 2: Competición de Inteligencia Artificial Genérica aplicada a Videojuegos (2 Jugadores)
+ * 		Adrian Rodriguez Grillo - 100316457@alumnos.uc3m.es
+ * Algoritmos geneticos y evolutivos
+ * Practica 2: Competicion de Inteligencia Artificial Generica aplicada a Videojuegos (2 Jugadores)
  *************************************************************************************************/
 
 package darwinnerAntColony;
@@ -34,11 +34,11 @@ public class Agent extends AbstractMultiPlayer {
     public Agent(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer, int playerID){
 
         /*
-         * Parámetros de la Colonia de Hormigas
+         * Parï¿½metros de la Colonia de Hormigas
          */
 
     	/*
-    	 * Variables útiles
+    	 * Variables ï¿½tiles
     	 */
     	// ArrayList de acciones
         acciones = stateObs.getAvailableActions(playerID);
@@ -56,24 +56,24 @@ public class Agent extends AbstractMultiPlayer {
         }
 
         /*
-         *  Generación del grafo
+         *  Generaciï¿½n del grafo
          */
         
         /*
-         * Exploración de las hormigas (Trasladar al método que haga falta)
+         * Exploraciï¿½n de las hormigas (Trasladar al mï¿½todo que haga falta)
          */
     
         /*
-         * Evaluación de caminos de las hormigas (Trasladar al método que haga falta)
+         * Evaluaciï¿½n de caminos de las hormigas (Trasladar al mï¿½todo que haga falta)
          */
         
         /*
-         * Potenciar caminos de las hormigas (Trasladar al método que haga falta)
+         * Potenciar caminos de las hormigas (Trasladar al mï¿½todo que haga falta)
          */
     }
 
     /**
-     * Elección de la acción a realizar
+     * Elecciï¿½n de la acciï¿½n a realizar
      * @param stateObs Estado actual de la partida.
      * @param elapsedTimer Tiempo en el que la accion acaba, limite de tiempo.
      * @return
@@ -85,7 +85,7 @@ public class Agent extends AbstractMultiPlayer {
     }
 
     /**
-     * Evaluación del agente: evaluación de los caminos de las hormigas
+     * Evaluaciï¿½n del agente: evaluaciï¿½n de los caminos de las hormigas
      * @param stateObs Estado actual de la partida.
      * @param elapsedTimer Tiempo en el que la accion acaba, limite de tiempo.
      * @return

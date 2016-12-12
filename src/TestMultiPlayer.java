@@ -1,13 +1,13 @@
 /**************************************************************************************************
  * Autores:
- * 		Rubén Rodríguez - 100303579@alumnos.uc3m.es
- * 		Raúl López Rayo - 100073776@alumnos.uc3m.es
+ * 		Ruben Rodriguez - 100303579@alumnos.uc3m.es
+ * 		Raul Lopez Rayo - 100073776@alumnos.uc3m.es
  * 		Daniel Jerez Garrido - 100303628@alumnos.uc3m.es
  * 		Juan Poblete Sandoval - 100303554@alumnos.uc3m.es
  * 		Luis Buceta Ojeda - 100303573@alumnos.uc3m.es
- * 		Adrián Rodríguez Grillo - 100316457@alumnos.uc3m.es
- * Algoritmos genéticos y evolutivos
- * Práctica 2: Competición de Inteligencia Artificial Genérica aplicada a Videojuegos (2 Jugadores)
+ * 		Adrian Rodriguez Grillo - 100316457@alumnos.uc3m.es
+ * Algoritmos geneticos y evolutivos
+ * Practica 2: Competicion de Inteligencia Artificial Generica aplicada a Videojuegos (2 Jugadores)
  *************************************************************************************************/
 
 import java.util.Random;
@@ -31,9 +31,9 @@ public class TestMultiPlayer
         // Controlador del agente que se va a entregar
         // TODO: crear paquete con el nombre "darwinner" cuyo contenido es igual al del paquete elegido para la entrega
         String darwinerController = "darwinner.Agent";
-        // Controlador del Algoritmo Genético hecho desde 0
+        // Controlador del Algoritmo Genï¿½tico hecho desde 0
         String darwinnerGeneticNew = "darwinnerGeneticNew.Agent";
-        // Controlador del Algoritmo Genético de ejemplo adaptado
+        // Controlador del Algoritmo Genï¿½tico de ejemplo adaptado
         String darwinnerSample = "darwinnerSample.Agent";
         // Controlador de Colonia de Hormigas
         String darwinnerAntColony = "darwinnerAntColony.Agent";
@@ -73,7 +73,7 @@ public class TestMultiPlayer
         String recordActionsFile = "outputGames/Movimientos_" + games[gameIdx] + "_nivel" + levelIdx + "_" + seed + ".txt"; //where to record the actions executed. null if not to save.
 
 
-        // Ejecución de la partida
+        // Ejecuciï¿½n de la partida
 
         /*
          * Jugador: humano
