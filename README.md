@@ -24,7 +24,9 @@ La localización y estructura del agente debe ser del siguiente estilo:
 - ontology
 - tools
 ```
-	
+
+## Cambios hechos
+En el sample GA cambiar la heuristica y borrar un random
 ## Enlaces de interés
 ### Colonia de hormigas
 Papers interesantes:
