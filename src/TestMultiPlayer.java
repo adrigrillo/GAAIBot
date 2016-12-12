@@ -39,7 +39,7 @@ public class TestMultiPlayer
         String darwinnerAntColony = "darwinnerAntColony.Agent";
 
         // Controladores a de la partida
-        String playerOne = darwinnerGeneticNew;
+        String playerOne = oneStepController;
         String playerTwo = randomController;
         String controllers = playerOne + " " + playerTwo;
 
