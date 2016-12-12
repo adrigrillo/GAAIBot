@@ -10,7 +10,7 @@
  * Practica 2: Competicion de Inteligencia Artificial Generica aplicada a Videojuegos (2 Jugadores)
  *************************************************************************************************/
 
-package darwinerSample;
+package darwinnerSample;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -19,7 +19,6 @@ import java.util.concurrent.TimeoutException;
 import controllers.multiPlayer.heuristics.StateHeuristicMulti;
 import controllers.multiPlayer.heuristics.WinScoreHeuristic;
 import ontology.Types;
-import ontology.Types.ACTIONS;
 import tools.ElapsedCpuTimer;
 import tools.Utils;
 import core.game.StateObservationMulti;

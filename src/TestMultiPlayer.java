@@ -31,15 +31,17 @@ public class TestMultiPlayer
         // Controlador del agente que se va a entregar
         // TODO: crear paquete con el nombre "darwinner" cuyo contenido es igual al del paquete elegido para la entrega
         String darwinerController = "darwinner.Agent";
-        // Controlador del Algoritmo Gen�tico hecho desde 0
+        // Controlador del Algoritmo Genetico hecho desde 0
         String darwinnerGeneticNew = "darwinnerGeneticNew.Agent";
-        // Controlador del Algoritmo Gen�tico de ejemplo adaptado
+        // Controlador del Algoritmo Genetico de ejemplo adaptado
         String darwinnerSample = "darwinnerSample.Agent";
         // Controlador de Colonia de Hormigas
         String darwinnerAntColony = "darwinnerAntColony.Agent";
+        // Controlador de Arbol
+        String darwinnerTree = "darwinnerTree.Agent";
 
         // Controladores a de la partida
-        String playerOne = oneStepController;
+        String playerOne = darwinnerTree;
         String playerTwo = randomController;
         String controllers = playerOne + " " + playerTwo;
 

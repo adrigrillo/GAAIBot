@@ -9,7 +9,6 @@
  * Algoritmos geneticos y evolutivos
  * Practica 2: Competicion de Inteligencia Artificial Generica aplicada a Videojuegos (2 Jugadores)
  *************************************************************************************************/
-
 package darwinnerGeneticNew;
 
 import core.game.StateObservationMulti;
@@ -20,9 +19,6 @@ import tools.ElapsedCpuTimer;
 import java.time.Clock;
 import java.util.ArrayList;
 
-/**
- * Created by adria on 14/11/2016.
- */
 public class Agent extends AbstractMultiPlayer {
 
     public ArrayList<ontology.Types.ACTIONS> acciones;
