@@ -14,7 +14,8 @@ package darwinnerTree;
 // basic imports to allow the controller to work
 import core.game.Observation;
 import core.game.StateObservation;
-import core.player.AbstractPlayer;
+import core.game.StateObservationMulti;
+import core.player.AbstractMultiPlayer;
 import tools.ElapsedCpuTimer;
 // import needed for getting Types.ACTIONS and Types.WINNER
 import ontology.Types;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 // import needed for random number generation
 import java.util.Random;
 
-public class Agent extends AbstractPlayer {
+public class Agent extends AbstractMultiPlayer {
 
     int actionNo = 0;
     final int populationSize = 6;
@@ -57,10 +58,110 @@ public class Agent extends AbstractPlayer {
         public StateObservation myState;
     }
 
-    // constructor, where the controller is first created to play the entire game
-    public Agent(StateObservation states, ElapsedCpuTimer elapsedTime) {
-        // do all initializations here
-        System.out.println("HEllo");
+    public Agent(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer, int playerID){
+
+    }
+
+    public Types.ACTIONS act(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer) {
+        // generate arraylist of potential future states
+        ArrayList<StateAndAncestor> population = new ArrayList<StateAndAncestor>();
+        for (int i = 0; i < populationSize; i++) { population.add( new StateAndAncestor (stateObs.copy(),i)); }
+
+        // for each of the generated states, make a randomized move, based on how many moves are available
+        int numAvailMoves = stateObs.getAvailableActions().size();
+        ArrayList<Types.ACTIONS> firstMove = new ArrayList<Types.ACTIONS>();
+        for (int i = 0; i < populationSize; i++) {
+            int actNo = rng.nextInt(numAvailMoves);
+            //System.out.println("RNG: " + actNo);
+            // populate an arraylist with one move per individual
+            // it is good to remember the first move, so we can pick it later on
+            firstMove.add( stateObs.getAvailableActions().get(actNo) );
+            // actually apply the move to the copied state
+            population.get(i).myState.advance( stateObs.getAvailableActions().get(actNo) );
+        }
+
+        int generationNo = 1;
+        double remainingtime = elapsedTimer.remainingTimeMillis();
+        int bestActor = 0; 	// the index of the individual in the population who is best
+
+        ArrayList<StateTuple> stateScore = new ArrayList<StateTuple>();
+        while ( generationNo < totalGenerations && remainingtime > 5.0 ) {
+            stateScore.clear();
+            // evaluate how good each of the individuals are
+            for (int i = 0; i < populationSize; i++) {
+                // state tuples have two things: an id (int) and a score (double)
+                stateScore.add( new StateTuple( i, stateEval(population.get(i).myState) ) );
+                remainingtime = elapsedTimer.remainingTimeMillis();
+                if (remainingtime < 3.0) break;
+            }
+
+            remainingtime = elapsedTimer.remainingTimeMillis();
+            if (remainingtime < 3.0) break;
+
+            // pick the best 'mu' individuals and replace the remaining 'lambda' individuals
+            ArrayList<StateTuple> toSortScores = new ArrayList<StateTuple>();
+
+            for (StateTuple p : stateScore) { toSortScores.add( new StateTuple(p.stateno, p.statescore) ); }
+
+            // this will sort them in ascending order of their score
+            Collections.sort(toSortScores);
+
+            int sortedsize = toSortScores.size();
+            //for (int i = 0; i < sortedsize; i++)
+            //System.out.println(toSortScores.get(i).stateno + " s: " + toSortScores.get(i).statescore);
+            // the best actor is the ancestor of who is sorted the highest -- just keep track of index of who it is!
+            bestActor = population.get(toSortScores.get(sortedsize-1).stateno).ancesNo;
+            remainingtime = elapsedTimer.remainingTimeMillis();
+            if (remainingtime < 3.0) break;
+            // go through the lowest 'lambda' inviduals and replace them in the original population
+            // note: we will only copy over the *best* state; this may limit diversity
+            //System.out.println("-------");
+            for (int i = 0; i < lamSize; i++) {
+
+                // get indexes of the current individual (to replace) and index of the best individual
+                int indexOfReplacedIndividual = toSortScores.get(i).stateno;
+                int indexOfBestIndividual = toSortScores.get(populationSize-1).stateno;
+
+                // copy state of the best individual, and descend it to our new individual (reproduction)
+                // remember to retain memory of the best ancestor of this individual as well
+                StateObservation stateOfBestIndividual = population.get(indexOfBestIndividual).myState.copy();
+                int ancestorOfBestIndividual = population.get(indexOfBestIndividual).ancesNo;
+                StateAndAncestor newIndividual = new StateAndAncestor(stateOfBestIndividual, ancestorOfBestIndividual);
+
+                population.set( indexOfReplacedIndividual, newIndividual );
+                remainingtime = elapsedTimer.remainingTimeMillis();
+                if (remainingtime < 3.0) break;
+            }
+
+            remainingtime = elapsedTimer.remainingTimeMillis();
+            if (remainingtime < 3.0) break;
+
+            // now that everything is in the 'best' next state, we will generate another set of random actions to perform
+            // we will perform a random action for each copied state (individual) to progress the tree search
+            for (int i = 0; i < populationSize; i++) {
+                int numMoves = population.get(i).myState.getAvailableActions().size();
+                // this will happen if one of the individuals has died and no move remains
+                if (numMoves > 0) {
+                    int moveSelect = rng.nextInt(numMoves);
+                    population.get(i).myState.advance( population.get(i).myState.getAvailableActions().get( moveSelect ) );
+                    //System.out.println("i: " + i + " new move: " + moveSelect);
+                }
+                remainingtime = elapsedTimer.remainingTimeMillis();
+                if (remainingtime < 3.0) break;
+            }
+            generationNo++;
+        }
+
+        // Return the 'next action' of the best individual in the population
+        Types.ACTIONS finalAction = firstMove.get(bestActor);
+
+        //System.out.println("Best actor: " + bestActor);
+        //System.out.println(elapsedTimer.remainingTimeMillis()); // if this is 0, then we are out of time
+
+        //System.out.println("-------");
+        //System.out.println("-------");
+
+        return finalAction;
     }
 
     // evaluate a specific state based on some heuristics
@@ -138,110 +239,4 @@ public class Agent extends AbstractPlayer {
 
         return stateVal;
     }
-
-    // at every 'state' the controller must make an action -- this method is thus called
-    // this MUST return in 40 ms to correctly perform an action -- this is given by 'origTime'
-    public Types.ACTIONS act(StateObservation origState, ElapsedCpuTimer origTime) {
-
-        // generate arraylist of potential future states
-        ArrayList<StateAndAncestor> population = new ArrayList<StateAndAncestor>();
-        for (int i = 0; i < populationSize; i++) { population.add( new StateAndAncestor (origState.copy(),i)); }
-
-        // for each of the generated states, make a randomized move, based on how many moves are available
-        int numAvailMoves = origState.getAvailableActions().size();
-        ArrayList<Types.ACTIONS> firstMove = new ArrayList<Types.ACTIONS>();
-        for (int i = 0; i < populationSize; i++) {
-            int actNo = rng.nextInt(numAvailMoves);
-            //System.out.println("RNG: " + actNo);
-            // populate an arraylist with one move per individual
-            // it is good to remember the first move, so we can pick it later on
-            firstMove.add( origState.getAvailableActions().get(actNo) );
-            // actually apply the move to the copied state
-            population.get(i).myState.advance( origState.getAvailableActions().get(actNo) );
-        }
-
-        int generationNo = 1;
-        double remainingtime = origTime.remainingTimeMillis();
-        int bestActor = 0; 	// the index of the individual in the population who is best
-
-        ArrayList<StateTuple> stateScore = new ArrayList<StateTuple>();
-        while ( generationNo < totalGenerations && remainingtime > 5.0 ) {
-            stateScore.clear();
-            // evaluate how good each of the individuals are
-            for (int i = 0; i < populationSize; i++) {
-                // state tuples have two things: an id (int) and a score (double)
-                stateScore.add( new StateTuple( i, stateEval(population.get(i).myState) ) );
-                remainingtime = origTime.remainingTimeMillis();
-                if (remainingtime < 3.0) break;
-            }
-
-            remainingtime = origTime.remainingTimeMillis();
-            if (remainingtime < 3.0) break;
-
-            // pick the best 'mu' individuals and replace the remaining 'lambda' individuals
-            ArrayList<StateTuple> toSortScores = new ArrayList<StateTuple>();
-
-            for (StateTuple p : stateScore) { toSortScores.add( new StateTuple(p.stateno, p.statescore) ); }
-
-            // this will sort them in ascending order of their score
-            Collections.sort(toSortScores);
-
-            int sortedsize = toSortScores.size();
-            //for (int i = 0; i < sortedsize; i++)
-            //System.out.println(toSortScores.get(i).stateno + " s: " + toSortScores.get(i).statescore);
-            // the best actor is the ancestor of who is sorted the highest -- just keep track of index of who it is!
-            bestActor = population.get(toSortScores.get(sortedsize-1).stateno).ancesNo;
-            remainingtime = origTime.remainingTimeMillis();
-            if (remainingtime < 3.0) break;
-            // go through the lowest 'lambda' inviduals and replace them in the original population
-            // note: we will only copy over the *best* state; this may limit diversity
-            //System.out.println("-------");
-            for (int i = 0; i < lamSize; i++) {
-
-                // get indexes of the current individual (to replace) and index of the best individual
-                int indexOfReplacedIndividual = toSortScores.get(i).stateno;
-                int indexOfBestIndividual = toSortScores.get(populationSize-1).stateno;
-
-                // copy state of the best individual, and descend it to our new individual (reproduction)
-                // remember to retain memory of the best ancestor of this individual as well
-                StateObservation stateOfBestIndividual = population.get(indexOfBestIndividual).myState.copy();
-                int ancestorOfBestIndividual = population.get(indexOfBestIndividual).ancesNo;
-                StateAndAncestor newIndividual = new StateAndAncestor(stateOfBestIndividual, ancestorOfBestIndividual);
-
-                population.set( indexOfReplacedIndividual, newIndividual );
-                remainingtime = origTime.remainingTimeMillis();
-                if (remainingtime < 3.0) break;
-            }
-
-            remainingtime = origTime.remainingTimeMillis();
-            if (remainingtime < 3.0) break;
-
-            // now that everything is in the 'best' next state, we will generate another set of random actions to perform
-            // we will perform a random action for each copied state (individual) to progress the tree search
-            for (int i = 0; i < populationSize; i++) {
-                int numMoves = population.get(i).myState.getAvailableActions().size();
-                // this will happen if one of the individuals has died and no move remains
-                if (numMoves > 0) {
-                    int moveSelect = rng.nextInt(numMoves);
-                    population.get(i).myState.advance( population.get(i).myState.getAvailableActions().get( moveSelect ) );
-                    //System.out.println("i: " + i + " new move: " + moveSelect);
-                }
-                remainingtime = origTime.remainingTimeMillis();
-                if (remainingtime < 3.0) break;
-            }
-            generationNo++;
-        }
-
-        // Return the 'next action' of the best individual in the population
-        Types.ACTIONS finalAction = firstMove.get(bestActor);
-
-        //System.out.println("Best actor: " + bestActor);
-        //System.out.println(origTime.remainingTimeMillis()); // if this is 0, then we are out of time
-
-        //System.out.println("-------");
-        //System.out.println("-------");
-
-        return finalAction;
-    }
-
 }
