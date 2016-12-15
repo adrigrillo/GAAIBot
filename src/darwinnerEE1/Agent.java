@@ -9,7 +9,7 @@
  * Algoritmos geneticos y evolutivos
  * Practica 2: Competicion de Inteligencia Artificial Generica aplicada a Videojuegos (2 Jugadores)
  *************************************************************************************************/
-package darwinnerTree;
+package darwinnerEE1;
 
 // basic imports to allow the controller to work
 import core.game.Observation;
@@ -22,7 +22,6 @@ import ontology.Types;
 // import needed for dealing with locations on the grid
 import tools.Vector2d;
 // import needed for dealing with some java functionality
-import java.awt.*;
 import java.util.*;
 import java.util.ArrayList;
 // import needed for random number generation
@@ -75,19 +74,17 @@ public class Agent extends AbstractMultiPlayer {
 
     public Types.ACTIONS act(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer) {
         // Creamos una poblacion con el estado actual
-        ArrayList<Individuo_Antecesor> population = new ArrayList<Individuo_Antecesor>();
+        ArrayList<Individuo_Antecesor> poblacion = new ArrayList<Individuo_Antecesor>();
         for (int i = 0; i < tamPoblacion; i++)
-            population.add(new Individuo_Antecesor(stateObs.copy(), i));
-
+            poblacion.add(new Individuo_Antecesor(stateObs.copy(), i));
         /* Realizamos un movimiento aleatorio para cada individuo de la poblacion
          * y guardamos el primer movimiento para aplicarlo en la partida */
         ArrayList<Types.ACTIONS> movimientos = new ArrayList<Types.ACTIONS>();
         for (int i = 0; i < tamPoblacion; i++) {
             int movimiento = alt.nextInt(posiblesMovimientos);
             movimientos.add(stateObs.getAvailableActions().get(movimiento));
-            population.get(i).estado.advance(stateObs.getAvailableActions().get(movimiento));
+            poblacion.get(i).estado.advance(stateObs.getAvailableActions().get(movimiento));
         }
-
         int nGeneracion = 1;
         int mejorIndividuo = 0;
         double tiempoRestante = elapsedTimer.remainingTimeMillis();
@@ -97,89 +94,37 @@ public class Agent extends AbstractMultiPlayer {
             puntuacionEstado.clear();
             // Evaluamos cada individuo
             for (int i = 0; i < tamPoblacion; i++) {
-                puntuacionEstado.add(new puntuacionIndividuo(i, stateEval(population.get(i).estado)));
+                puntuacionEstado.add(new puntuacionIndividuo(i, stateEval(poblacion.get(i).estado)));
                 tiempoRestante = elapsedTimer.remainingTimeMillis();
                 if (tiempoRestante < 3.0) break;
             }
             // Ordenamos las puntuaciones por valor y cogemos el mejor individuo
-            Collections.sort(puntuacionEstado);
-            mejorIndividuo = population.get(puntuacionEstado.get(0).indIndividuo).indAntecesor;
-            if (elapsedTimer.remainingTimeMillis() < 3.0) break;
-            // Vamos a sacar los hijos del mejor individuo y los meteremos en la poblacion
+            Collections.sort(puntuacionEstado, Collections.reverseOrder());
+            mejorIndividuo = poblacion.get(puntuacionEstado.get(0).indIndividuo).indAntecesor;
+            tiempoRestante = elapsedTimer.remainingTimeMillis();
+            if (tiempoRestante < 3.0) break;
+            // Sacamos los hijos del mejor individuo y los meteremos en
+            // la poblacion
             for (int i = 0; i < lamSize; i++){
                 // Creamos el individuo con el estado del padre
-                Individuo_Antecesor nuevoIndividuo = new Individuo_Antecesor(population.get(mejorIndividuo).estado,
+                Individuo_Antecesor nuevoIndividuo = new Individuo_Antecesor(poblacion.get(mejorIndividuo).estado,
                         mejorIndividuo);
                 // Elegimos una accion sucesora al azar
                 nuevoIndividuo.estado.advance(stateObs.getAvailableActions().get(alt.nextInt(posiblesMovimientos)));
                 // Lo añadimos a la poblacion
-                population.add(nuevoIndividuo);
-            }
-
-
-            //
-            ArrayList<puntuacionIndividuo> toSortScores = new ArrayList<puntuacionIndividuo>();
-
-
-            for (puntuacionIndividuo p : puntuacionEstado)
-                toSortScores.add(new puntuacionIndividuo(p.indIndividuo, p.puntuacion));
-
-            // this will sort them in ascending order of their score
-            Collections.sort(toSortScores);
-
-            int sortedsize = toSortScores.size();
-            // the best actor is the ancestor of who is sorted the highest -- just keep track of index of who it is!
-            mejorIndividuo = population.get(toSortScores.get(sortedsize-1).indIndividuo).indAntecesor;
-            tiempoRestante = elapsedTimer.remainingTimeMillis();
-            if (tiempoRestante < 3.0) break;
-            // go through the lowest 'lambda' inviduals and replace them in the original population
-            // note: we will only copy over the *best* state; this may limit diversity
-            //System.out.println("-------");
-            for (int i = 0; i < lamSize; i++) {
-
-                // get indexes of the current individual (to replace) and index of the best individual
-                int indexOfReplacedIndividual = toSortScores.get(i).indIndividuo;
-                int indexOfBestIndividual = toSortScores.get(tamPoblacion-1).indIndividuo;
-
-                // copy state of the best individual, and descend it to our new individual (reproduction)
-                // remember to retain memory of the best ancestor of this individual as well
-                StateObservation stateOfBestIndividual = population.get(indexOfBestIndividual).estado.copy();
-                int ancestorOfBestIndividual = population.get(indexOfBestIndividual).indAntecesor;
-                Individuo_Antecesor newIndividual = new Individuo_Antecesor(stateOfBestIndividual, ancestorOfBestIndividual);
-
-                population.set( indexOfReplacedIndividual, newIndividual );
+                poblacion.add(nuevoIndividuo);
                 tiempoRestante = elapsedTimer.remainingTimeMillis();
                 if (tiempoRestante < 3.0) break;
             }
-
-            tiempoRestante = elapsedTimer.remainingTimeMillis();
-            if (tiempoRestante < 3.0) break;
-
-            // now that everything is in the 'best' next state, we will generate another set of random actions to perform
-            // we will perform a random action for each copied state (individual) to progress the tree search
-            for (int i = 0; i < tamPoblacion; i++) {
-                int numMoves = population.get(i).estado.getAvailableActions().size();
-                // this will happen if one of the individuals has died and no move remains
-                if (numMoves > 0) {
-                    int moveSelect = alt.nextInt(numMoves);
-                    population.get(i).estado.advance( population.get(i).estado.getAvailableActions().get( moveSelect ) );
-                    //System.out.println("i: " + i + " new move: " + moveSelect);
-                }
-                tiempoRestante = elapsedTimer.remainingTimeMillis();
-                if (tiempoRestante < 3.0) break;
-            }
+            // Eliminamos los lambda peores individuos de la poblacion original
+            ArrayList<Individuo_Antecesor> eliminar = new ArrayList<Individuo_Antecesor>();
+            for (int i = muSize; i < tamPoblacion; i++)
+                eliminar.add(poblacion.get(puntuacionEstado.get(i).indIndividuo));
+            for (int i = 0; i < lamSize; i++)
+                poblacion.remove(eliminar.get(i));
             nGeneracion++;
         }
-
-        // Return the 'next action' of the best individual in the population
         Types.ACTIONS finalAction = movimientos.get(mejorIndividuo);
-
-        //System.out.println("Best actor: " + mejorIndividuo);
-        //System.out.println(elapsedTimer.remainingTimeMillis()); // if this is 0, then we are out of time
-
-        //System.out.println("-------");
-        //System.out.println("-------");
-
         return finalAction;
     }
 
