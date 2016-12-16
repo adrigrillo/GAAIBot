@@ -26,7 +26,7 @@ import java.util.Random;
 public class Agent extends AbstractMultiPlayer {
 
 	/*
-	 * Variables auxiliares
+	 * Variables auxiliares del estado del juego
 	 */
 	// ArrayList de acciones disponibles
     public ArrayList <ontology.Types.ACTIONS> acciones;
@@ -45,12 +45,19 @@ public class Agent extends AbstractMultiPlayer {
      */
     // Numero de hormigas
     int no_hormigas = 3;
-    //TODO cambiar esto. Grafo de las hormigas
-    //public ArrayList <StateObservationMulti> grafo = new ArrayList<>();
+    // Grafo de las hormigas
+    Object [] grafo;
     // Estado de ACO
     AcoState state;
     // Estado auxiliar del juego
     StateObservationMulti stateUtil;
+    // Variable auxiliar para indicar si es la primera accion del juego
+    int flagInit = 0;
+    /*
+     * Parametros de la evaluacion
+     */
+    private static int HUGE_ENDGAME_SCORE = 1000;
+    private static int MAX_TIMESTEPS = 40;
 
     /**
      * Constructor del agente
@@ -80,7 +87,7 @@ public class Agent extends AbstractMultiPlayer {
          * [2]: feromona
          * [3]: evaluacion
          */
-        Object [] grafo = new Object [acciones.size()*4];
+        grafo = new Object [acciones.size()*4];
         int auxCont = 0;
         
         for (ontology.Types.ACTIONS accion : acciones) {
@@ -92,11 +99,9 @@ public class Agent extends AbstractMultiPlayer {
         	state.setGanador(stateUtil.getMultiGameWinner());
         	grafo[auxCont] = state;
         	grafo[auxCont + 2] = 0;
-        	grafo[auxCont + 3] = EVALUACION;
+        	grafo[auxCont + 3] = evaluacion(stateUtil, id);
 			auxCont += 4;
 		}
-        
-        
     }
 
     /**
@@ -109,8 +114,20 @@ public class Agent extends AbstractMultiPlayer {
     	
     	acciones = stateObs.getAvailableActions(id);
     	
+    	// Primera accion de la partida
+    	if (flagInit == 0){
+    		
+    		// Code
+    		
+    		// Actualizaicon de flag para modificar comportamiento
+    		flagInit = 1;
+            return null;
+    	}
+    	else{
+            return null;
+    	}
+    	
         
-        return null;
 
         /*
          * Exploracion de las hormigas (Trasladar al metodo que haga falta)
@@ -126,10 +143,7 @@ public class Agent extends AbstractMultiPlayer {
     	
         /*
          * Potenciar caminos de las hormigas (Trasladar al metodo que haga falta)
-         */
-    	
-    	
-        //return null;
+         */	
     }
 
     /**
@@ -138,9 +152,36 @@ public class Agent extends AbstractMultiPlayer {
      * @param elapsedTimer Tiempo en el que la accion acaba, limite de tiempo.
      * @return
      */
-    public int evaluacion(int[] individuo,StateObservationMulti stateObs){
+    public static double evaluacion(StateObservationMulti stateObs, int id){
+        double scores = 0;
 
-        return 0;
+            scores = stateObs.getGameScore();
+
+            if (stateObs.isGameOver()) {
+                if (stateObs.getMultiGameWinner()[id] == Types.WINNER.PLAYER_WINS) {
+                    scores += HUGE_ENDGAME_SCORE;
+                }
+                else if (stateObs.getMultiGameWinner()[id] == Types.WINNER.PLAYER_LOSES) {
+                    if(stateObs.getGameTick() == MAX_TIMESTEPS){
+                        scores -= HUGE_ENDGAME_SCORE * 0.8;
+                    }
+                    else{
+                        scores -= HUGE_ENDGAME_SCORE;
+                    }
+                }
+            }
+
+        if(stateObs.getMultiGameWinner()[id] == Types.WINNER.PLAYER_LOSES &&
+                stateObs.getMultiGameWinner()[id] == Types.WINNER.PLAYER_LOSES){
+            scores += 0.8 * HUGE_ENDGAME_SCORE;
+            scores += 1.0 * HUGE_ENDGAME_SCORE + 1;
+        }
+
+        else if(stateObs.getMultiGameWinner()[id] == Types.WINNER.PLAYER_WINS &&
+                stateObs.getMultiGameWinner()[id] == Types.WINNER.PLAYER_WINS){
+            scores -= 0.8 * HUGE_ENDGAME_SCORE;
+        }
+
+        return scores;
     }
-
 }
