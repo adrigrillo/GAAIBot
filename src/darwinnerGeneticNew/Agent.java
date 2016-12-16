@@ -29,7 +29,7 @@ public class Agent extends AbstractMultiPlayer {
     //Parametros
     private double mutacion = 0.01;
     private int poblacion_size = 6; //Tamaño problacion
-    private int genes = 6;
+    private int genes = 8;
     private  int ciclos = 1;
     private static int HUGE_ENDGAME_SCORE = 1000;
     private static int MAX_TIMESTEPS = 40;
@@ -71,10 +71,11 @@ public class Agent extends AbstractMultiPlayer {
 
         int vida = stateObs.getAvatarHealthPoints();
         //vida
-        System.out.println("Player "+playerID + " Vida: "+vida);
+        System.out.print("Player "+playerID + " Life: "+vida+" | ");
         for(int i=0;i<acciones.size();i++){
-            System.out.println(acciones.get(i).toString());
+            System.out.print(acciones.get(i).toString()+" | ");
         }
+        System.out.print("\nStart Game\n");
 
     }
 
@@ -92,12 +93,14 @@ public class Agent extends AbstractMultiPlayer {
         double fitness_individuo = -1;
         int ganador = 0;
         int random ;
-
+        long time_start;
+        long time_end=0;
         int torneo_size = 2;
         int accion_elegida = 0;
-
+        time_start = System.currentTimeMillis();
+        int c = 0;
         //Algoritmo genetico
-        for(int c=0;c<ciclos;c++){
+        for(c=0;time_end<MAX_TIMESTEPS-10;c++){
             //Torneo
             for(int p=0;p<poblacion.length;p++){
                 for(int t=0;t<torneo_size;t++){
@@ -153,22 +156,24 @@ public class Agent extends AbstractMultiPlayer {
 
                 poblacion[i]=hijo1_mutado;
                 poblacion[i+1]=hijo2_mutado;
-
+                //System.out.print(poblacion[i]+"|");
+                //System.out.print(poblacion[i+1]+"|");
                 i+=2;
             }
+            time_end = System.currentTimeMillis()-time_start;
         }
-        System.out.println(accion_elegida);
+        System.out.println("Action: "+accion_elegida+" | Time: "+(time_end)+" | Generations: "+c+" | Fitness: "+mejor_fitness);
         return acciones.get(accion_elegida);
     }
 
     public double evaluar(String individuo,StateObservationMulti stateObs){
 
-        StateObservationMulti estado;
-        estado = stateObs.copy();
+        //StateObservationMulti estado;
+        //estado = stateObs.copy();
         double fitness = 0;
-        for(int e = 1 ; e < genes ; e++) {
-            estado.advance(acciones.get((int)(individuo.charAt(e))-48));
-            fitness+= evaluacion(estado);
+        for(int e = 0 ; e < genes ; e++) {
+            stateObs.advance(acciones.get((int)(individuo.charAt(e))-48));
+            fitness+= evaluacion(stateObs);
         }
 
         return fitness;
