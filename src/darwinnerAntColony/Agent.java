@@ -15,15 +15,39 @@ package darwinnerAntColony;
 import core.game.StateObservationMulti;
 import core.player.AbstractMultiPlayer;
 import ontology.Types;
+import ontology.Types.ACTIONS;
 import tools.ElapsedCpuTimer;
 
 import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class Agent extends AbstractMultiPlayer {
 
-    public ArrayList<ontology.Types.ACTIONS> acciones;
+	/*
+	 * Variables globales
+	 */
+	// ArrayList de acciones
+    public ArrayList <ontology.Types.ACTIONS> acciones;
+    // Vida del agente
+    int vida;
+    // Numero de jugadores
+    int no_players;
+    // Id del Agente
+    int id;
+    // Id del Oponente
+    int oppId;
+    // Numero de hormigas
+    int no_hormigas;
+    // Grafo de las hormigas
+    public ArrayList <StateObservationMulti> grafo = new ArrayList<>();
+    // Estado auxiliar
+    StateObservationMulti stateAux;
+    // Accion auxiliar
+    ontology.Types.ACTIONS accionAux;
+    // Lista auxiliar de acciones
+    public ArrayList <ontology.Types.ACTIONS> accionesAux = new ArrayList<>();
 
     /**
      * Constructor del agente
@@ -34,16 +58,18 @@ public class Agent extends AbstractMultiPlayer {
     public Agent(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer, int playerID){
 
         /*
-         * Par�metros de la Colonia de Hormigas
+         * Parametros de la Colonia de Hormigas
          */
+    	no_hormigas = 3;
 
     	/*
-    	 * Variables �tiles
+    	 * Variables utiles
     	 */
-    	// ArrayList de acciones
         acciones = stateObs.getAvailableActions(playerID);
-        // Vida del agente
-        int vida = stateObs.getAvatarHealthPoints();
+        vida = stateObs.getAvatarHealthPoints();
+        no_players = stateObs.getNoPlayers();
+        id = playerID;
+        oppId = (playerID + 1) % stateObs.getNoPlayers();
         
         /*
          * Debug
@@ -56,36 +82,65 @@ public class Agent extends AbstractMultiPlayer {
         }
 
         /*
-         *  Generaci�n del grafo
+         *  Generacion del grafo inicial
          */
-        
-        /*
-         * Exploraci�n de las hormigas (Trasladar al m�todo que haga falta)
-         */
-    
-        /*
-         * Evaluaci�n de caminos de las hormigas (Trasladar al m�todo que haga falta)
-         */
-        
-        /*
-         * Potenciar caminos de las hormigas (Trasladar al m�todo que haga falta)
-         */
+        grafo.add(stateObs);
+        for (ontology.Types.ACTIONS actions : acciones) {
+        	stateAux = stateObs;
+        	stateAux.advance(actions);
+        	grafo.add(stateObs);
+        	if (actions != null)
+        		accionesAux.add(actions);
+		}
     }
 
     /**
-     * Elecci�n de la acci�n a realizar
+     * Eleccion de la accion a realizar
      * @param stateObs Estado actual de la partida.
      * @param elapsedTimer Tiempo en el que la accion acaba, limite de tiempo.
      * @return
      */
     public Types.ACTIONS act(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer){
+    	
+    	acciones = stateObs.getAvailableActions(id);
+    	
+    	/*
+         *  Generacion del grafo inicial
+         */
+    	accionesAux = new ArrayList<>();
+    	grafo = new ArrayList<>();
+        grafo.add(stateObs);
+        for (ontology.Types.ACTIONS actions : acciones) {
+        	stateAux = stateObs;
+        	stateAux.advance(actions);
+        	grafo.add(stateObs);
+        	accionesAux.add(actions);
+		}
+        
+        return accionesAux.get(new Random().nextInt(accionesAux.size()));
 
-
-        return null;
+        /*
+         * Exploracion de las hormigas (Trasladar al metodo que haga falta)
+         */
+    
+        /*
+         * Evaluacion de caminos de las hormigas (Trasladar al metodo que haga falta)
+         */
+        
+    	/*
+    	 * Podar grafo
+    	 */
+    	
+        /*
+         * Potenciar caminos de las hormigas (Trasladar al metodo que haga falta)
+         */
+    	
+    	
+        //return null;
     }
 
     /**
-     * Evaluaci�n del agente: evaluaci�n de los caminos de las hormigas
+     * Evaluacion del agente: evaluacion de los caminos de las hormigas
      * @param stateObs Estado actual de la partida.
      * @param elapsedTimer Tiempo en el que la accion acaba, limite de tiempo.
      * @return
