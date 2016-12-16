@@ -26,9 +26,9 @@ import java.util.Random;
 public class Agent extends AbstractMultiPlayer {
 
 	/*
-	 * Variables globales
+	 * Variables auxiliares
 	 */
-	// ArrayList de acciones
+	// ArrayList de acciones disponibles
     public ArrayList <ontology.Types.ACTIONS> acciones;
     // Vida del agente
     int vida;
@@ -38,16 +38,19 @@ public class Agent extends AbstractMultiPlayer {
     int id;
     // Id del Oponente
     int oppId;
+    // Score del Agente
+    double score;
+    /*
+     * Parametros de ACO
+     */
     // Numero de hormigas
-    int no_hormigas;
-    // Grafo de las hormigas
-    public ArrayList <StateObservationMulti> grafo = new ArrayList<>();
-    // Estado auxiliar
-    StateObservationMulti stateAux;
-    // Accion auxiliar
-    ontology.Types.ACTIONS accionAux;
-    // Lista auxiliar de acciones
-    public ArrayList <ontology.Types.ACTIONS> accionesAux = new ArrayList<>();
+    int no_hormigas = 3;
+    //TODO cambiar esto. Grafo de las hormigas
+    //public ArrayList <StateObservationMulti> grafo = new ArrayList<>();
+    // Estado de ACO
+    AcoState state;
+    // Estado auxiliar del juego
+    StateObservationMulti stateUtil;
 
     /**
      * Constructor del agente
@@ -57,11 +60,6 @@ public class Agent extends AbstractMultiPlayer {
      */
     public Agent(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer, int playerID){
 
-        /*
-         * Parametros de la Colonia de Hormigas
-         */
-    	no_hormigas = 3;
-
     	/*
     	 * Variables utiles
     	 */
@@ -70,6 +68,34 @@ public class Agent extends AbstractMultiPlayer {
         no_players = stateObs.getNoPlayers();
         id = playerID;
         oppId = (playerID + 1) % stateObs.getNoPlayers();
+        score = stateObs.getGameScore(id);
+        
+        
+        /*
+         * Construccion del grafo inicial.
+         * Solo se expande 1 nivel.
+         * Estructura:
+         * [0]: estado del juego (accion, vida, score, winner)
+         * [1]: hijos
+         * [2]: feromona
+         * [3]: evaluacion
+         */
+        Object [] grafo = new Object [acciones.size()*4];
+        int auxCont = 0;
+        
+        for (ontology.Types.ACTIONS accion : acciones) {
+        	stateUtil = stateObs;
+        	state = new AcoState();
+        	state.setAccion(accion);
+        	state.setVida(stateUtil.getAvatarHealthPoints(id));
+        	state.setScore(stateUtil.getGameScore(id));
+        	state.setGanador(stateUtil.getMultiGameWinner());
+        	grafo[auxCont] = state;
+        	grafo[auxCont + 2] = 0;
+        	grafo[auxCont + 3] = EVALUACION;
+			auxCont += 4;
+		}
+        
         
     }
 
