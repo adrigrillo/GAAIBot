@@ -71,27 +71,6 @@ public class Agent extends AbstractMultiPlayer {
         id = playerID;
         oppId = (playerID + 1) % stateObs.getNoPlayers();
         
-        /*
-         * Debug
-         */
-        // Id y vida del agente
-        System.out.println("Player "+playerID + " Vida: "+vida);
-        // Acciones
-        for(int i=0;i<acciones.size();i++){
-            System.out.println(acciones.get(i).toString());
-        }
-
-        /*
-         *  Generacion del grafo inicial
-         */
-        grafo.add(stateObs);
-        for (ontology.Types.ACTIONS actions : acciones) {
-        	stateAux = stateObs;
-        	stateAux.advance(actions);
-        	grafo.add(stateObs);
-        	if (actions != null)
-        		accionesAux.add(actions);
-		}
     }
 
     /**
@@ -104,20 +83,8 @@ public class Agent extends AbstractMultiPlayer {
     	
     	acciones = stateObs.getAvailableActions(id);
     	
-    	/*
-         *  Generacion del grafo inicial
-         */
-    	accionesAux = new ArrayList<>();
-    	grafo = new ArrayList<>();
-        grafo.add(stateObs);
-        for (ontology.Types.ACTIONS actions : acciones) {
-        	stateAux = stateObs;
-        	stateAux.advance(actions);
-        	grafo.add(stateObs);
-        	accionesAux.add(actions);
-		}
         
-        return accionesAux.get(new Random().nextInt(accionesAux.size()));
+        return null;
 
         /*
          * Exploracion de las hormigas (Trasladar al metodo que haga falta)
