@@ -91,7 +91,7 @@ public class Agent extends AbstractMultiPlayer {
         int auxCont = 0;
         
         for (ontology.Types.ACTIONS accion : acciones) {
-        	stateUtil = stateObs;
+        	stateUtil = stateObs.copy();
         	state = new AcoState();
         	state.setAccion(accion);
         	state.setVida(stateUtil.getAvatarHealthPoints(id));
