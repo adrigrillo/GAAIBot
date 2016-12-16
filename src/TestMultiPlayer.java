@@ -11,6 +11,8 @@
  *************************************************************************************************/
 
 import java.util.Random;
+import java.util.StringJoiner;
+
 import core.ArcadeMachine;
 
 public class TestMultiPlayer
@@ -37,12 +39,13 @@ public class TestMultiPlayer
         String darwinnerSample = "darwinnerSample.Agent";
         // Controlador de Colonia de Hormigas
         String darwinnerAntColony = "darwinnerAntColony.Agent";
-        // Controlador de Arbol
-        String darwinnerTree = "darwinnerTree.Agent";
+        // Controlador de (mu, lambda)- EE
+        String darwinnerEE = "darwinnerEE1.Agent";
+        String tree = "darwinnerTree.Agent";
 
         // Controladores a de la partida
-        String playerOne = darwinnerTree;
-        String playerTwo = randomController;
+        String playerOne = darwinnerGeneticNew;
+        String playerTwo = "" ;
         String controllers = playerOne + " " + playerTwo;
 
         //Available games:
@@ -64,7 +67,7 @@ public class TestMultiPlayer
 
         //Game and level to play
         // Indice del juego a ejecutar
-        int gameIdx = 34;
+        int gameIdx = 3;
         // Indice del nivel del juego
         int levelIdx = 0; //level names from 0 to 4 (game_lvlN.txt).
         
