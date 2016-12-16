@@ -44,8 +44,8 @@ public class TestMultiPlayer
         String tree = "darwinnerTree.Agent";
 
         // Controladores a de la partida
-        String playerOne = darwinnerEE;
-        String playerTwo = oneStepController ;
+        String playerOne = darwinnerGeneticNew;
+        String playerTwo = "" ;
         String controllers = playerOne + " " + playerTwo;
 
         //Available games:
@@ -67,7 +67,7 @@ public class TestMultiPlayer
 
         //Game and level to play
         // Indice del juego a ejecutar
-        int gameIdx = 34;
+        int gameIdx = 3;
         // Indice del nivel del juego
         int levelIdx = 0; //level names from 0 to 4 (game_lvlN.txt).
         

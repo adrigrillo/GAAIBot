@@ -15,7 +15,7 @@ import core.game.StateObservationMulti;
 import core.player.AbstractMultiPlayer;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
-
+import java.util.Random;
 import java.time.Clock;
 import java.util.ArrayList;
 
@@ -25,16 +25,27 @@ public class Agent extends AbstractMultiPlayer {
     //ArrayList<int[]> poblacion = new ArrayList<int[]>();
     //<int[]> torneo = new ArrayList<int[]>();
 
+
+    //Parametros
+    private double mutacion = 0.01;
+    private int poblacion_size = 6; //Tamaño problacion
+    private int genes = 6;
+    private  int ciclos = 1;
+    private static int HUGE_ENDGAME_SCORE = 1000;
+    private static int MAX_TIMESTEPS = 40;
+
     //Variables
-    private StateObservationMulti[] estados;
     private String[] poblacion;
     private String[] torneo;
-    private int poblacion_size = 30; //Tamaño problacion
-    private String cromosoma = ""; //4 forwards + accion
-    private int genes = 5;
+    private String cromosoma = "";
     private int i=0;
     private String hijo1="";
     private String hijo2="";
+    private String hijo1_mutado="";
+    private String hijo2_mutado="";
+    private static int id_jugador;
+
+
 
     /**
      * Metodo que es el constructor del agente, aqui debemos inicializar la poblacion
@@ -46,8 +57,8 @@ public class Agent extends AbstractMultiPlayer {
 
         poblacion = new String[poblacion_size];
         torneo = new String[poblacion_size];
-        estados = new StateObservationMulti[genes];
         acciones = stateObs.getAvailableActions(playerID); //Array de acciones
+        id_jugador = playerID;
 
         //Generacion de poblacion inicial
         for(int p = 0 ; p < poblacion_size ; p++){
@@ -55,9 +66,7 @@ public class Agent extends AbstractMultiPlayer {
             for(int g = 0 ; g < genes ; g++ ){
                 cromosoma += ((int)(Math.random()*acciones.size()));
             }
-            //System.out.print(cromosoma[0]+","+cromosoma[1]+","+cromosoma[2]+","+cromosoma[3]+","+cromosoma[4]+"\n");
             poblacion[p]=cromosoma;
-
         }
 
         int vida = stateObs.getAvatarHealthPoints();
@@ -79,26 +88,25 @@ public class Agent extends AbstractMultiPlayer {
     public Types.ACTIONS act(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer){
 
 
-        int mejor_fitness = 0;
-        int fitness_individuo = 0;
+        double mejor_fitness = -1;
+        double fitness_individuo = -1;
         int ganador = 0;
-        int random = 0;
-        double mutacion = 0.01;
-        int torneo_size = 4;
+        int random ;
+
+        int torneo_size = 2;
         int accion_elegida = 0;
 
         //Algoritmo genetico
-        for(int c=0;c<50;c++){
+        for(int c=0;c<ciclos;c++){
             //Torneo
             for(int p=0;p<poblacion.length;p++){
                 for(int t=0;t<torneo_size;t++){
                     random = (int)(Math.random()*poblacion.length);
-                    //System.out.println(poblacion[random]);
-                    //fitness_individuo = evaluacion(poblacion[random],stateObs);
-
+                    fitness_individuo = evaluar(poblacion[random],stateObs);
                     if(mejor_fitness<fitness_individuo){
                         mejor_fitness = fitness_individuo;
                         ganador = random;
+                        accion_elegida = ((int)(poblacion[random].charAt(0))-48);
 
                     }
                 }
@@ -106,53 +114,97 @@ public class Agent extends AbstractMultiPlayer {
             }
 
             //Cruce
-            //i = 0;
-            /*while (i < poblacion.length){
+            i = 0;
+            while (i < poblacion.length){
                 hijo1 = "";
                 hijo2 = "";
-                /*for(int g = 0;g<genes;g++){
-                    //random = (int)(Math.random());
-                    //System.out.println(random);
+                for(int g = 0;g<genes;g++){
+
+                    Random padre_o_madre = new Random();
+                    if(padre_o_madre.nextBoolean()){
+                        hijo1+=torneo[i].charAt(g);
+                        hijo2+=torneo[i+1].charAt(g);
+                    }else{
+                        hijo1+=torneo[i+1].charAt(g);
+                        hijo2+=torneo[i].charAt(g);
+                    }
+                }
+
+                //Mutacion
+                hijo1_mutado = "";
+                hijo2_mutado = "";
+                for(int j=0;j<genes;j++){
+                    double mutacion_hijo1 = Math.random();
+                    double mutacion_hijo2 = Math.random();
+
+                    if(mutacion_hijo1<mutacion){
+                        hijo1_mutado += ((int)(Math.random()*acciones.size()));
+                    }else{
+                        hijo1_mutado += hijo1.charAt(j);
+                    }
+
+                    if(mutacion_hijo2<mutacion){
+                        hijo2_mutado += ((int)(Math.random()*acciones.size()));
+                    }else{
+                        hijo2_mutado += hijo2.charAt(j);
+                    }
 
                 }
 
-                i++;
-            }*/
+                poblacion[i]=hijo1_mutado;
+                poblacion[i+1]=hijo2_mutado;
 
-
-
-
+                i+=2;
+            }
         }
-        //System.out.println((poblacion.get(ganador))[0]);
-
-        poblacion = torneo.clone();
-        //torneo.clear();
+        System.out.println(accion_elegida);
         return acciones.get(accion_elegida);
     }
 
-    public int evaluacion(String individuo,StateObservationMulti stateObs){
+    public double evaluar(String individuo,StateObservationMulti stateObs){
 
-        // SIN TERMINAR, problemas con los fordwards
-        int fitness = 0;
-        int score = 0;
-
-        //Estado actual
-        estados[0] = stateObs.copy();
-        //Estados futuros
-        for(int e = 1 ; e < genes ; e++){
-            estados[e]=estados[e-1].copy();
-            estados[e-1].advance(acciones.get((int)(individuo.charAt(e))-48));
+        StateObservationMulti estado;
+        estado = stateObs.copy();
+        double fitness = 0;
+        for(int e = 1 ; e < genes ; e++) {
+            estado.advance(acciones.get((int)(individuo.charAt(e))-48));
+            fitness+= evaluacion(estado);
         }
 
-        //System.out.println();
-        //Ponderacion individuo
-        for(int i = 0;i < estados.length; i++){
-            score+=estados[i].getGameScore();
+        return fitness;
+    }
+
+    public static double evaluacion(StateObservationMulti stateObs){
+        double scores = 0;
+
+            scores = stateObs.getGameScore();
+
+            if (stateObs.isGameOver()) {
+                if (stateObs.getMultiGameWinner()[id_jugador] == Types.WINNER.PLAYER_WINS) {
+                    scores += HUGE_ENDGAME_SCORE;
+                }
+                else if (stateObs.getMultiGameWinner()[id_jugador] == Types.WINNER.PLAYER_LOSES) {
+                    if(stateObs.getGameTick() == MAX_TIMESTEPS){
+                        scores -= HUGE_ENDGAME_SCORE * 0.8;
+                    }
+                    else{
+                        scores -= HUGE_ENDGAME_SCORE;
+                    }
+                }
+            }
+
+        if(stateObs.getMultiGameWinner()[id_jugador] == Types.WINNER.PLAYER_LOSES &&
+                stateObs.getMultiGameWinner()[id_jugador] == Types.WINNER.PLAYER_LOSES){
+            scores += 0.8 * HUGE_ENDGAME_SCORE;
+            scores += 1.0 * HUGE_ENDGAME_SCORE + 1;
         }
 
-        //System.out.println(score);
+        else if(stateObs.getMultiGameWinner()[id_jugador] == Types.WINNER.PLAYER_WINS &&
+                stateObs.getMultiGameWinner()[id_jugador] == Types.WINNER.PLAYER_WINS){
+            scores -= 0.8 * HUGE_ENDGAME_SCORE;
+        }
 
-        return (int)(Math.random()*poblacion_size); // esto solo es una prueba
+        return scores;
     }
 
 }
