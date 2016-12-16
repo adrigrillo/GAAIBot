@@ -98,9 +98,10 @@ public class Agent extends AbstractMultiPlayer {
         int torneo_size = 2;
         int accion_elegida = 0;
         time_start = System.currentTimeMillis();
+        StateObservationMulti estado = stateObs.copy();;
         int c = 0;
         //Algoritmo genetico
-        for(c=0;time_end<MAX_TIMESTEPS-10;c++){
+        for(c=0;time_end<MAX_TIMESTEPS-12;c++){
             //Torneo
             for(int p=0;p<poblacion.length;p++){
                 for(int t=0;t<torneo_size;t++){
@@ -112,6 +113,7 @@ public class Agent extends AbstractMultiPlayer {
                         accion_elegida = ((int)(poblacion[random].charAt(0))-48);
 
                     }
+                    stateObs = estado.copy();
                 }
                 torneo[p]=poblacion[ganador];
             }
