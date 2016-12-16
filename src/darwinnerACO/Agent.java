@@ -10,7 +10,7 @@
  * Practica 2: Competicion de Inteligencia Artificial Generica aplicada a Videojuegos (2 Jugadores)
  *************************************************************************************************/
 
-package darwinnerAntColony;
+package darwinnerACO;
 
 import core.game.StateObservationMulti;
 import core.player.AbstractMultiPlayer;

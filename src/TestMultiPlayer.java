@@ -19,7 +19,9 @@ public class TestMultiPlayer
 {
     public static void main(String[] args) {
 
-        //Available sample controllers:
+        /*
+         * Available sample controllers:
+         */
         String doNothingController = "controllers.multiPlayer.doNothing.Agent";
         String humanController = "controllers.multiPlayer.human.Agent";
         String replayerControlloer = "controllers.multiPlayer.replayer.Agent";
@@ -29,7 +31,9 @@ public class TestMultiPlayer
         String oneStepController = "controllers.multiPlayer.sampleOneStepLookAhead.Agent";
         String randomController = "controllers.multiPlayer.sampleRandom.Agent";
         
-        // Controladores desarrollados
+        /*
+         *  Controladores desarrollados
+         */
         // Controlador del agente que se va a entregar
         // TODO: crear paquete con el nombre "darwinner" cuyo contenido es igual al del paquete elegido para la entrega
         String darwinerController = "darwinner.Agent";
@@ -38,20 +42,26 @@ public class TestMultiPlayer
         // Controlador del Algoritmo Genetico de ejemplo adaptado
         String darwinnerSample = "darwinnerSample.Agent";
         // Controlador de Colonia de Hormigas
-        String darwinnerAntColony = "darwinnerAntColony.Agent";
+        String darwinnerACO = "darwinnerACO.Agent";
         // Controlador de (mu, lambda)- EE
         String darwinnerEE = "darwinnerEE1.Agent";
         String tree = "darwinnerTree.Agent";
 
-        // Controladores a de la partida
+        /*
+         *  Controladores a de la partida
+         */
         String playerOne = darwinnerGeneticNew;
         String playerTwo = "" ;
         String controllers = playerOne + " " + playerTwo;
 
-        //Available games:
+        /*
+         * Available games:
+         */
         String gamesPath = "examples/2player/";
 
-        //All public games
+        /*
+         * All public games
+         */
         String games [] = new String[]{"accelerator", "akkaarrh", "asteroids", "beekeeper", "bombergirl",     // 0-4
                 "breedingdragons", "captureflag", "competesokoban", "copsNrobbers", "donkeykong",   		  // 5-9
                 "dragonattack", "drowning", "egghunt", "fatty", "firetruck",                        		  // 10-14
@@ -61,24 +71,32 @@ public class TestMultiPlayer
                 "teamescape", "thebridge", "trainride", "treasuremap", "tron",                      		  // 30-34
                 "upgrade-x", "uphigh", "warzone", "watchout", "wheelme"};                           		  // 35-39
 
-        //Other settings
+        /*
+         * Other settings
+         */
         boolean visuals = true;
         int seed = new Random().nextInt();
 
-        //Game and level to play
+        /*
+         * Game and level to play
+         */
         // Indice del juego a ejecutar
         int gameIdx = 3;
         // Indice del nivel del juego
         int levelIdx = 0; //level names from 0 to 4 (game_lvlN.txt).
-        
+        // Seleccion de juego y nivel
         String game = gamesPath + games[gameIdx] + ".txt";
         String level1 = gamesPath + games[gameIdx] + "_lvl" + levelIdx +".txt";
 
-        // Con esto guardamos los resultados en un archivo, mas facil para ver que hace
+        /*
+         *  Debug
+         *  Con esto guardamos los resultados en un archivo,
+         *  para ver que hace
+         */
         String recordActionsFile = "outputGames/Movimientos_" + games[gameIdx] + "_nivel" + levelIdx + "_" + seed + ".txt"; //where to record the actions executed. null if not to save.
 
 
-        // Ejecuci�n de la partida
+        // Ejecucion de la partida
 
         /*
          * Jugador: humano
