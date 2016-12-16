@@ -28,6 +28,7 @@ La localización y estructura del agente debe ser del siguiente estilo:
 ## Cambios hechos
 En el sample GA cambiar la heuristica y borrar un random
 ## Enlaces de interés
+### General
+* https://dennissoemers.github.io/jekyll/update/2016/09/29/the-general-video-game-agent-maastcts2.html
 ### Colonia de hormigas
-Papers interesantes:
 * http://www.site.uottawa.ca/~sshar009/seal08.pdf
