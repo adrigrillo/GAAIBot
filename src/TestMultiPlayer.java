@@ -50,7 +50,7 @@ public class TestMultiPlayer
         /*
          *  Controladores a de la partida
          */
-        String playerOne = oneStepController;
+        String playerOne = darwinnerEE;
         String playerTwo = darwinnerEE ;
         String controllers = playerOne + " " + playerTwo;
 
@@ -81,7 +81,7 @@ public class TestMultiPlayer
          * Game and level to play
          */
         // Indice del juego a ejecutar
-        int gameIdx = 3;
+        int gameIdx = 22;
         // Indice del nivel del juego
         int levelIdx = 0; //level names from 0 to 4 (game_lvlN.txt).
         // Seleccion de juego y nivel

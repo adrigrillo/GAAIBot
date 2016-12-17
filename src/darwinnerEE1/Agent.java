@@ -1,3 +1,5 @@
+package darwinnerEE1;
+
 /**************************************************************************************************
  * Autores:
  * 		Ruben Rodriguez - 100303579@alumnos.uc3m.es
@@ -9,18 +11,14 @@
  * Algoritmos geneticos y evolutivos
  * Practica 2: Competicion de Inteligencia Artificial Generica aplicada a Videojuegos (2 Jugadores)
  *************************************************************************************************/
-package darwinnerEE1;
 
 // basic imports to allow the controller to work
-import core.game.Observation;
-import core.game.StateObservation;
 import core.game.StateObservationMulti;
 import core.player.AbstractMultiPlayer;
 import tools.ElapsedCpuTimer;
 // import needed for getting Types.ACTIONS and Types.WINNER
 import ontology.Types;
 // import needed for dealing with locations on the grid
-import tools.Vector2d;
 // import needed for dealing with some java functionality
 import java.util.*;
 import java.util.ArrayList;
@@ -34,6 +32,7 @@ public class Agent extends AbstractMultiPlayer {
     final int muSize = 2;
     final int lamSize = tamPoblacion - muSize;
     final int profundidad = 30;
+    int playerID;
     Random alt = new Random();
 
     /**
@@ -59,17 +58,18 @@ public class Agent extends AbstractMultiPlayer {
      * y la posicion de su antecesor, es decir, del movimiento que se puede realizar
      * en el turno actual */
     public class Individuo_Antecesor {
-        public Individuo_Antecesor(StateObservation individuo, int antecesor) {
+        public Individuo_Antecesor(StateObservationMulti individuo, int antecesor) {
             estado = individuo;
             indAntecesor = antecesor;
         }
         public int indAntecesor;
-        public StateObservation estado;
+        public StateObservationMulti estado;
     }
 
     public Agent(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer, int playerID){
         // Dependiendo del juego se tiene un numero de acciones disponibles
         posiblesMovimientos = stateObs.getAvailableActions().size();
+        this.playerID = playerID;
     }
 
     public Types.ACTIONS act(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer) {
@@ -97,7 +97,8 @@ public class Agent extends AbstractMultiPlayer {
             puntuacionEstado.clear();
             // Evaluamos cada individuo
             for (int i = 0; i < tamPoblacion; i++) {
-                puntuacionEstado.add(new puntuacionIndividuo(i, stateEval(poblacion.get(i).estado)));
+                puntuacionEstado.add(new puntuacionIndividuo(i, HeuristicaSample.stateEval(poblacion.get(i).estado,
+                        this.playerID)));
                 tiempoRestante = elapsedTimer.remainingTimeMillis();
                 if (tiempoRestante < 3.0) break;
             }
@@ -129,81 +130,5 @@ public class Agent extends AbstractMultiPlayer {
         }
         Types.ACTIONS finalAction = movimientos.get(mejorIndividuo);
         return finalAction;
-    }
-
-    // evaluate a specific state based on some heuristics
-    // the current heuristics: value victory and higher score most, and attempt to move towards resources (if they exist)
-    // if no resources exist, move towards portals (if they exist)
-    // npc's in different games hold different meanings--some you want to get close to, some you don't
-    // this works badly in games that do not utilize 'score'
-    public double stateEval ( StateObservation someState ) {
-
-        double stateVal = 0;
-
-        double score = someState.getGameScore();
-        Vector2d myPosition = someState.getAvatarPosition();
-        ArrayList<Observation>[] npcPositions = someState.getNPCPositions(myPosition);
-        ArrayList<Observation>[] portalPositions = someState.getPortalsPositions(myPosition);
-        ArrayList<Observation>[] resourcesPositions = someState.getResourcesPositions(myPosition);
-
-        if (someState.getGameWinner() == Types.WINNER.PLAYER_WINS) { return 999999999; }
-        if (someState.getGameWinner() == Types.WINNER.PLAYER_LOSES) { return -99999999; }
-
-        // better value for higher scores
-        stateVal += score * 100;
-
-        // better value if closer to closest resource of each type
-        // but even better if less resources (means we picked it up)
-        int noResources = 0;
-        if (resourcesPositions != null) {
-            for (int i = 0; i < resourcesPositions.length; i++) {
-                noResources += resourcesPositions[i].size();
-                if (resourcesPositions[i].size() > 0) {
-                    Vector2d closestResPos = resourcesPositions[i].get(0).position;
-                    double distToResource = myPosition.dist(closestResPos);
-                    // the farther away it is, the worst the stateVal will be
-                    stateVal -= distToResource*5;
-                }
-            }
-        }
-        stateVal -= noResources * 100;
-
-        // better value if closer to closest portal of each type
-        // what if there is a wall between us and the portal? --> in 'zelda' this is why we die
-        if (portalPositions != null) {
-            for (int i = 0; i < portalPositions.length; i++) {
-                if (portalPositions[i].size() > 0) {
-                    Vector2d closestPorPos = portalPositions[i].get(0).position;
-                    double distToPortal = myPosition.dist(closestPorPos);
-                    // the farther away it is, the worst the stateVal will be
-                    stateVal -= distToPortal / 5;
-                }
-            }
-        }
-
-        // better value if less NPCs
-        int noNPC = 0;
-        if (npcPositions != null) {
-            for (int i = 0; i < npcPositions.length; i++) {
-                noNPC = npcPositions[i].size();
-                if (npcPositions[i].size() > 0) {
-                    Vector2d closestNPCPos = npcPositions[i].get(0).position;
-                    double distToNPC = myPosition.dist(closestNPCPos);
-                    // to be a bit more *aggressive* on the gameplay, we will
-                    // make our heuristic move us *closer* to NPCs, regardless of
-                    // whether they are harmful or not
-                    stateVal -= distToNPC / 80;
-                }
-                if (npcPositions[i].size() > 1) {
-                    Vector2d farthestNPCPos = npcPositions[i].get(npcPositions[i].size()-1).position;
-                    double distToFar = myPosition.dist(farthestNPCPos);
-                    //stateVal -= distToFar / 50;
-                }
-
-            }
-        }
-        stateVal -= noNPC*300;
-
-        return stateVal;
     }
 }
