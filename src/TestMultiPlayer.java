@@ -50,8 +50,8 @@ public class TestMultiPlayer
         /*
          *  Controladores a de la partida
          */
-        String playerOne = darwinnerGeneticNew;
-        String playerTwo = "" ;
+        String playerOne = oneStepController;
+        String playerTwo = darwinnerEE ;
         String controllers = playerOne + " " + playerTwo;
 
         /*

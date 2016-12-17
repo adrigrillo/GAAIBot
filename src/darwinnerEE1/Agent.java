@@ -73,6 +73,9 @@ public class Agent extends AbstractMultiPlayer {
     }
 
     public Types.ACTIONS act(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer) {
+        // Hay juegos en los que cuando vas a ganar deja de mostrar acciones, esto evita el error
+        if (stateObs.getAvailableActions().size() == 0)
+            return null;
         // Creamos una poblacion con el estado actual
         ArrayList<Individuo_Antecesor> poblacion = new ArrayList<Individuo_Antecesor>();
         for (int i = 0; i < tamPoblacion; i++)
