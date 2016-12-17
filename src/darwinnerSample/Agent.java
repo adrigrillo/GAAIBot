@@ -18,6 +18,8 @@ import java.util.concurrent.TimeoutException;
 
 import controllers.multiPlayer.heuristics.StateHeuristicMulti;
 import controllers.multiPlayer.heuristics.WinScoreHeuristic;
+import darwinnerEE1.HeuristicaAvara;
+import darwinnerEE1.HeuristicaSample;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tools.Utils;
@@ -82,7 +84,7 @@ public class Agent extends AbstractMultiPlayer{
     }
 
 
-    double microbial_tournament(int[][] actionGenome, StateObservationMulti stateObs, StateHeuristicMulti heuristic, int playerID) throws TimeoutException {
+    double microbial_tournament(int[][] actionGenome, StateObservationMulti stateObs, HeuristicaAvara heuristic, int playerID) throws TimeoutException {
         int a, b, c, W, L;
         int i;
 
@@ -148,7 +150,7 @@ public class Agent extends AbstractMultiPlayer{
     }
 
 
-    private double simulate(StateObservationMulti stateObs, StateHeuristicMulti heuristic, int[] policy) throws TimeoutException {
+    private double simulate(StateObservationMulti stateObs, HeuristicaAvara heuristic, int[] policy) throws TimeoutException {
 
     	// esta comprobacion ha dicho que la podemos cambiar de sitio para mejorar
     	long remaining = timer.remainingTimeMillis();
@@ -176,13 +178,13 @@ public class Agent extends AbstractMultiPlayer{
         }
 
         numSimulations++;
-        double score = Math.pow(GAMMA, depth) * heuristic.evaluateState(stateObs, id);
+        double score = Math.pow(GAMMA, depth) * heuristic.stateEval(stateObs, id);
         return score;
 
 
     }
 
-    private Types.ACTIONS microbial(StateObservationMulti stateObs, int maxdepth, StateHeuristicMulti heuristic, int iterations) {
+    private Types.ACTIONS microbial(StateObservationMulti stateObs, int maxdepth, HeuristicaAvara heuristic, int iterations) {
 
         double[][] maxScores = new double[no_players][];
         for (int i = 0; i < no_players; i++) {
@@ -208,8 +210,8 @@ public class Agent extends AbstractMultiPlayer{
 
                     double score = 0, scoreOpp = 0;
                     try {
-                        score = microbial_tournament(genome[id][r_action_mapping[id].get(acts[id])], stCopy, heuristic, id) + randomGenerator.nextDouble() * 0.00001;
-                        scoreOpp = microbial_tournament(genome[oppID][r_action_mapping[oppID].get(acts[oppID])], stCopy, heuristic, oppID) + randomGenerator.nextDouble() * 0.00001;
+                        score = microbial_tournament(genome[id][r_action_mapping[id].get(acts[id])], stCopy, heuristic, id) * 0.00001;
+                        scoreOpp = microbial_tournament(genome[oppID][r_action_mapping[oppID].get(acts[oppID])], stCopy, heuristic, oppID) * 0.00001;
                     } catch (TimeoutException e) {
                         break outerloop;
                     }
@@ -251,7 +253,7 @@ public class Agent extends AbstractMultiPlayer{
         this.timer = elapsedTimer;
         numSimulations = 0;
 
-        Types.ACTIONS lastGoodAction = microbial(stateObs, SIMULATION_DEPTH, new WinScoreHeuristic(stateObs), 100);
+        Types.ACTIONS lastGoodAction = microbial(stateObs, SIMULATION_DEPTH, new HeuristicaAvara(), 100);
 
         return lastGoodAction;
     }
