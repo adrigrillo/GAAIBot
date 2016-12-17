@@ -16,10 +16,12 @@ import core.game.StateObservationMulti;
 import core.player.AbstractMultiPlayer;
 import ontology.Types;
 import ontology.Types.ACTIONS;
+import ontology.sprites.npc.RandomInertial;
 import tools.ElapsedCpuTimer;
 
 import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 
@@ -45,6 +47,8 @@ public class Agent extends AbstractMultiPlayer {
      */
     // Numero de hormigas
     int no_hormigas = 3;
+    // Feromona a depositar
+    double feromona = 50.0;
     // Grafo de las hormigas
     Object [] grafo;
     // Estado de ACO
@@ -71,12 +75,7 @@ public class Agent extends AbstractMultiPlayer {
     	 * Variables utiles
     	 */
         acciones = stateObs.getAvailableActions(playerID);
-        vida = stateObs.getAvatarHealthPoints();
-        no_players = stateObs.getNoPlayers();
         id = playerID;
-        oppId = (playerID + 1) % stateObs.getNoPlayers();
-        score = stateObs.getGameScore(id);
-        
         
         /*
          * Construccion del grafo inicial.
@@ -102,6 +101,28 @@ public class Agent extends AbstractMultiPlayer {
         	grafo[auxCont + 3] = evaluacion(stateUtil, id);
 			auxCont += 4;
 		}
+
+        /*
+         * Viaje de hormigas
+         */
+        // Recorremos la matriz tantas veces como hormigas haya
+        for (int i = 0; i < no_hormigas; i++) {
+        	// Lista con los mejores nodos que una hormiga puede visitar
+        	ArrayList<Integer> subLista = new ArrayList<>();
+        	double mejor = 0;
+			for (int j = 3; j < grafo.length; j+=4) {
+				if ((double)grafo[j] == mejor){
+					subLista.add(j);
+				}
+				else if ((double)grafo[j] >= mejor){
+					subLista = new ArrayList<>();
+					subLista.add(j);
+				}
+			}
+			// Aumentamos la feromona del camino que ha elegido la hormiga
+			int destino = new Random().nextInt(subLista.size());
+			grafo[subLista.get(destino)] = (double)grafo[subLista.get(destino)] + feromona;
+		}
     }
 
     /**
@@ -114,10 +135,32 @@ public class Agent extends AbstractMultiPlayer {
     	
     	acciones = stateObs.getAvailableActions(id);
     	
+    	
     	// Primera accion de la partida
     	if (flagInit == 0){
     		
-    		// Code
+    		/*
+             * Viaje de hormigas.
+             * Se va ampliando el grafo en funcion de los caminos de las hormigas
+             */
+            // Recorremos la matriz tantas veces como hormigas haya
+            for (int i = 0; i < no_hormigas; i++) {
+            	// Lista con los mejores nodos que una hormiga puede visitar
+            	ArrayList<Integer> subLista = new ArrayList<>();
+            	double mejor = 0;
+    			for (int j = 3; j < grafo.length; j+=4) {
+    				if ((double)grafo[j] == mejor){
+    					subLista.add(j);
+    				}
+    				else if ((double)grafo[j] >= mejor){
+    					subLista = new ArrayList<>();
+    					subLista.add(j);
+    				}
+    			}
+    			// Aumentamos la feromona del camino que ha elegido la hormiga
+    			int destino = new Random().nextInt(subLista.size());
+    			grafo[subLista.get(destino)] = (double)grafo[subLista.get(destino)] + feromona;
+    		}
     		
     		// Actualizaicon de flag para modificar comportamiento
     		flagInit = 1;
