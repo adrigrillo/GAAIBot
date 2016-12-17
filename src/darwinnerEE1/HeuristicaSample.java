@@ -25,7 +25,7 @@ public class HeuristicaSample{
         double stateVal = 0;
         Vector2d avatarPosition = stateObs.getAvatarPosition(playerID);
         ArrayList<Observation>[] npcPositions = stateObs.getNPCPositions(avatarPosition);
-        ArrayList<Observation>[] portalPositions = stateObs.getPortalsPositions(avatarPosition);
+        ArrayList<Observation>[] portales = stateObs.getPortalsPositions(avatarPosition);
 
         int oppID = (playerID + 1) % stateObs.getNoPlayers();
         Types.WINNER[] winners = stateObs.getMultiGameWinner();
@@ -48,39 +48,29 @@ public class HeuristicaSample{
             return -500000000;
 
         double minDistance = Double.POSITIVE_INFINITY;
-        Vector2d minObject = null;
-        int minNPC_ID = -1;
-        int minNPCType = -1;
-
         int npcCounter = 0;
         if (npcPositions != null) {
             for (ArrayList<Observation> npcs : npcPositions) {
-                if(npcs.size() > 0)
-                {
-                    minObject   = npcs.get(0).position; //This is the closest guy
+                if(npcs.size() > 0){
                     minDistance = npcs.get(0).sqDist;   //This is the (square) distance to the closest NPC.
-                    minNPC_ID   = npcs.get(0).obsID;    //This is the id of the closest NPC.
-                    minNPCType  = npcs.get(0).itype;    //This is the type of the closest NPC.
                     npcCounter += npcs.size();
                 }
             }
         }
 
-        if (portalPositions == null) {
-
+        if (portales == null) {
             double score = 0;
             if (npcCounter == 0) {
                 score = stateObs.getGameScore(playerID) + stateVal*100000000;
             } else {
                 score = -minDistance / 100.0 + (-npcCounter) * 100.0 + stateObs.getGameScore(playerID) + stateVal*100000000;
             }
-
             return score;
         }
 
         double minDistancePortal = Double.POSITIVE_INFINITY;
         Vector2d minObjectPortal = null;
-        for (ArrayList<Observation> portals : portalPositions) {
+        for (ArrayList<Observation> portals : portales) {
             if(portals.size() > 0)
             {
                 minObjectPortal   =  portals.get(0).position; //This is the closest portal
