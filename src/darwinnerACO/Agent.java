@@ -88,7 +88,7 @@ public class Agent extends AbstractMultiPlayer {
          * [1]: hijos
          * [2]: feromona
          * [3]: evaluacion
-         * [4]: relevancia
+         * [4]: probabilidades
          */
         grafo = new Object [acciones.size()*5];
         int auxCont = 0;
@@ -142,28 +142,6 @@ public class Agent extends AbstractMultiPlayer {
     		   }
     		  }
     		
-    		
-    		
-//    		// Array de probabilidades: indica la probabilidad de que la hormiga pase por ese estado, de forma proporcional a la importancia del mismo
-//    		double [] probabilidades = new double[acciones.size()];
-//    		for(int j = 0; j < probabilidades.length; j++){
-//    			probabilidades[j] = relevancias[j]/totalRelevancias;
-//    			System.out.println(j + " prob - " + probabilidades[j]);
-//    		}
-//    		// Numero aleatorio para la decision
-//    		double random = Math.random();
-//    		double diff = 1.0;
-//    		// Indice del estado al que se va a transitar
-//    		int indiceMeta = 0;
-//    		// Eleccion final del camino al que ir por parte de la hormiga
-//    		for(int j = 0; j < probabilidades.length; j++){
-//    			double diffAux = diff - random;
-//    			System.out.println("diff " + diffAux);
-//    			if (diffAux <= diff){
-//    				indiceMeta = j;
-//    				diff = diffAux;
-//    			}
-//    		}
 			// Aumentamos la feromona del camino que ha elegido la hormiga
 			grafo[(indiceMeta*5)+3] = (double)grafo[(indiceMeta*5)+3] + feromona;
 			
