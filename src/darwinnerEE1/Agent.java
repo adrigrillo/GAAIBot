@@ -12,17 +12,12 @@ package darwinnerEE1;
  * Practica 2: Competicion de Inteligencia Artificial Generica aplicada a Videojuegos (2 Jugadores)
  *************************************************************************************************/
 
-// basic imports to allow the controller to work
 import core.game.StateObservationMulti;
 import core.player.AbstractMultiPlayer;
 import tools.ElapsedCpuTimer;
-// import needed for getting Types.ACTIONS and Types.WINNER
 import ontology.Types;
-// import needed for dealing with locations on the grid
-// import needed for dealing with some java functionality
 import java.util.*;
 import java.util.ArrayList;
-// import needed for random number generation
 import java.util.Random;
 
 public class Agent extends AbstractMultiPlayer {

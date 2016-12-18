@@ -1,16 +1,5 @@
 package darwinnerTree;
 
-import core.game.StateObservationMulti;
-import core.player.AbstractMultiPlayer;
-import darwinnerEE1.HeuristicaAvara;
-import darwinnerEE1.HeuristicaSample;
-import ontology.Types;
-import tools.ElapsedCpuTimer;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
-
 /**************************************************************************************************
  * Autores:
  * 		Ruben Rodriguez - 100303579@alumnos.uc3m.es
@@ -22,6 +11,15 @@ import java.util.Random;
  * Algoritmos geneticos y evolutivos
  * Practica 2: Competicion de Inteligencia Artificial Generica aplicada a Videojuegos (2 Jugadores)
  *************************************************************************************************/
+
+import core.game.StateObservationMulti;
+import core.player.AbstractMultiPlayer;
+import darwinnerEE1.HeuristicaAvara;
+import darwinnerEE1.HeuristicaSample;
+import ontology.Types;
+import tools.ElapsedCpuTimer;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Agent extends AbstractMultiPlayer{
     private ArrayList<Integer> posiblesMovimientos = new ArrayList<Integer>();
@@ -57,6 +55,7 @@ public class Agent extends AbstractMultiPlayer{
         for (int i = 0; i < nPosiblesMovimientos; i++)
             posiblesMovimientos.add(i);
         this.playerID = playerID;
+        this.indice = 0;
     }
 
     public Types.ACTIONS act(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer) {
