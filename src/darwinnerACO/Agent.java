@@ -97,7 +97,7 @@ public class Agent extends AbstractMultiPlayer {
         	state.setScore(stateUtil.getGameScore(id));
         	state.setGanador(stateUtil.getMultiGameWinner());
         	grafo[auxCont] = state;
-        	grafo[auxCont + 2] = 0;
+        	grafo[auxCont + 2] = 0.0;
         	grafo[auxCont + 3] = evaluacion(stateUtil, id);
 			auxCont += 4;
 		}
@@ -121,7 +121,7 @@ public class Agent extends AbstractMultiPlayer {
 			}
 			// Aumentamos la feromona del camino que ha elegido la hormiga
 			int destino = new Random().nextInt(subLista.size());
-			grafo[subLista.get(destino)] = (double)grafo[subLista.get(destino)] + feromona;
+			grafo[subLista.get(destino)-1] = (double)grafo[subLista.get(destino)-1] + feromona;
 		}
     }
 
@@ -136,6 +136,34 @@ public class Agent extends AbstractMultiPlayer {
     	acciones = stateObs.getAvailableActions(id);
     	
     	
+    	//Pesos que se daran a evaluacion y feromonas a la hora de escoger las hormigas un camino 
+        double pesoEvaluacion = 0.4;
+        double pesoFeromonas = 0.6;
+		
+		//Calculamos las probabilidades de decision de camino de las hormigas
+		double [] relevancias = new double[acciones.size()];
+		double totalRelevancias = 0;
+		for (int j = 3; j < grafo.length; j+=4) {
+			relevancias[(j-3)/4] = pesoEvaluacion * (double)grafo[j] + pesoFeromonas * (double)grafo[j-1];
+			totalRelevancias += relevancias[(j-3)/4];
+		}
+		
+		double [] probabilidades = new double[acciones.size()];
+		probabilidades[0] = relevancias[0]/totalRelevancias;
+		for(int j = 1; j < probabilidades.length; j++){
+			probabilidades[j] = probabilidades[j-1] + relevancias[j]/totalRelevancias;
+		}
+		
+		double aux = Math.random();
+		
+		for(int j = 0; j < probabilidades.length; j++){
+			if (aux <= probabilidades[j]){
+				//ENTRA POR ESTE JODIDO CAMINO
+			}
+		}
+    	//Fin de CALCULAR PROBABILIDADES y escoger camino
+    	
+		
     	// Primera accion de la partida
     	if (flagInit == 0){
     		
@@ -143,24 +171,25 @@ public class Agent extends AbstractMultiPlayer {
              * Viaje de hormigas.
              * Se va ampliando el grafo en funcion de los caminos de las hormigas
              */
-            // Recorremos la matriz tantas veces como hormigas haya
-            for (int i = 0; i < no_hormigas; i++) {
-            	// Lista con los mejores nodos que una hormiga puede visitar
-            	ArrayList<Integer> subLista = new ArrayList<>();
-            	double mejor = 0;
-    			for (int j = 3; j < grafo.length; j+=4) {
-    				if ((double)grafo[j] == mejor){
-    					subLista.add(j);
-    				}
-    				else if ((double)grafo[j] >= mejor){
-    					subLista = new ArrayList<>();
-    					subLista.add(j);
-    				}
-    			}
-    			// Aumentamos la feromona del camino que ha elegido la hormiga
-    			int destino = new Random().nextInt(subLista.size());
-    			grafo[subLista.get(destino)] = (double)grafo[subLista.get(destino)] + feromona;
-    		}
+			
+			// Recorremos la matriz tantas veces como hormigas haya
+	        for (int i = 0; i < no_hormigas; i++) {
+	        	// Lista con los mejores nodos que una hormiga puede visitar
+	        	ArrayList<Integer> subLista = new ArrayList<>();
+	        	double mejor = 0;
+				for (int j = 3; j < grafo.length; j+=4) {
+					if ((double)grafo[j] == mejor){
+						subLista.add(j);
+					}
+					else if ((double)grafo[j] >= mejor){
+						subLista = new ArrayList<>();
+						subLista.add(j);
+					}
+				}
+				// Aumentamos la feromona del camino que ha elegido la hormiga
+				int destino = new Random().nextInt(subLista.size());
+				grafo[subLista.get(destino)-1] = (double)grafo[subLista.get(destino)-1] + feromona;
+			}
     		
     		// Actualizaicon de flag para modificar comportamiento
     		flagInit = 1;
@@ -169,9 +198,7 @@ public class Agent extends AbstractMultiPlayer {
     	else{
             return null;
     	}
-    	
-        
-
+		
         /*
          * Exploracion de las hormigas (Trasladar al metodo que haga falta)
          */
