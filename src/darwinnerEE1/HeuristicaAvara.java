@@ -20,11 +20,9 @@ import java.util.ArrayList;
  *************************************************************************************************/
 
 public class HeuristicaAvara {
-    // evaluate a specific state based on some heuristics
-    // the current heuristics: value victory and higher score most, and attempt to move towards resources (if they exist)
-    // if no resources exist, move towards portals (if they exist)
-    // npc's in different games hold different meanings--some you want to get close to, some you don't
-    // this works badly in games that do not utilize 'score'
+    /* Heuristica que toma como lo más importante la puntuacion, sufre si no tiene la puntuacion
+     * intenta moverse hacia los recursos si es que hay para recogerlos y si no hacia el portal al que haya
+     * que ir */
     public static double stateEval (StateObservationMulti stateObs, int playerID){
 
         double stateVal = 0;
@@ -40,12 +38,10 @@ public class HeuristicaAvara {
         if (stateObs.getGameWinner() == Types.WINNER.PLAYER_WINS) { return 999999999; }
         if (stateObs.getGameWinner() == Types.WINNER.PLAYER_LOSES) { return -99999999; }
 
-
-        // better value for higher scores
+        // cuanto mas alto la puntuacion mejor
         stateVal += score * 100;
 
-        // better value if closer to closest resource of each type
-        // but even better if less resources (means we picked it up)
+        // Aumenta el valor cuanto mas cerca de los recursos y cuanto menos haya
         int noResources = 0;
         if (resourcesPositions != null) {
             for (int i = 0; i < resourcesPositions.length; i++) {
@@ -60,8 +56,7 @@ public class HeuristicaAvara {
         }
         stateVal -= noResources * 100;
 
-        // better value if closer to closest portal of each type
-        // what if there is a wall between us and the portal? --> in 'zelda' this is why we die
+        // Mejor cuanto mas cerca esta del portal, aunque falla cuando hay una pared en medio
         if (portalPositions != null) {
             for (int i = 0; i < portalPositions.length; i++) {
                 if (portalPositions[i].size() > 0) {
@@ -73,7 +68,7 @@ public class HeuristicaAvara {
             }
         }
 
-        // better value if less NPCs
+        // Cuanto menos npc mejor
         int noNPC = 0;
         if (npcPositions != null) {
             for (int i = 0; i < npcPositions.length; i++) {
@@ -81,17 +76,9 @@ public class HeuristicaAvara {
                 if (npcPositions[i].size() > 0) {
                     Vector2d closestNPCPos = npcPositions[i].get(0).position;
                     double distToNPC = myPosition.dist(closestNPCPos);
-                    // to be a bit more *aggressive* on the gameplay, we will
-                    // make our heuristic move us *closer* to NPCs, regardless of
-                    // whether they are harmful or not
+                    // buscamos que se aleje
                     stateVal -= distToNPC / 80;
                 }
-                if (npcPositions[i].size() > 1) {
-                    Vector2d farthestNPCPos = npcPositions[i].get(npcPositions[i].size()-1).position;
-                    double distToFar = myPosition.dist(farthestNPCPos);
-                    //stateVal -= distToFar / 50;
-                }
-
             }
         }
         stateVal -= noNPC*300;

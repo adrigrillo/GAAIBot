@@ -97,7 +97,7 @@ public class Agent extends AbstractMultiPlayer {
             puntuacionEstado.clear();
             // Evaluamos cada individuo
             for (int i = 0; i < tamPoblacion; i++) {
-                puntuacionEstado.add(new puntuacionIndividuo(i, HeuristicaSample.stateEval(poblacion.get(i).estado,
+                puntuacionEstado.add(new puntuacionIndividuo(i, HeuristicaAvara.stateEval(poblacion.get(i).estado,
                         this.playerID)));
                 tiempoRestante = elapsedTimer.remainingTimeMillis();
                 if (tiempoRestante < 3.0) break;
@@ -111,7 +111,7 @@ public class Agent extends AbstractMultiPlayer {
             // la poblacion
             for (int i = 0; i < lamSize; i++){
                 // Creamos el individuo con el estado del padre
-                Individuo_Antecesor nuevoIndividuo = new Individuo_Antecesor(poblacion.get(mejorIndividuo).estado,
+                Individuo_Antecesor nuevoIndividuo = new Individuo_Antecesor(poblacion.get(puntuacionEstado.get(0).indIndividuo).estado,
                         mejorIndividuo);
                 // Elegimos una accion sucesora al azar
                 nuevoIndividuo.estado.advance(stateObs.getAvailableActions().get(alt.nextInt(posiblesMovimientos)));
