@@ -92,7 +92,7 @@ public class Agent extends AbstractMultiPlayer {
             puntuacionEstado.clear();
             // Evaluamos cada individuo
             for (int i = 0; i < tamPoblacion; i++) {
-                puntuacionEstado.add(new puntuacionIndividuo(i, HeuristicaAvara.stateEval(poblacion.get(i).estado,
+                puntuacionEstado.add(new puntuacionIndividuo(i, HeuristicaSample.stateEval(poblacion.get(i).estado,
                         this.playerID)));
                 tiempoRestante = elapsedTimer.remainingTimeMillis();
                 if (tiempoRestante < 3.0) break;
