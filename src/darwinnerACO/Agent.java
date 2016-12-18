@@ -88,8 +88,9 @@ public class Agent extends AbstractMultiPlayer {
          * [1]: hijos
          * [2]: feromona
          * [3]: evaluacion
+         * [4]: relevancia
          */
-        grafo = new Object [acciones.size()*4];
+        grafo = new Object [acciones.size()*5];
         int auxCont = 0;
         
         for (ontology.Types.ACTIONS accion : acciones) {
@@ -102,7 +103,8 @@ public class Agent extends AbstractMultiPlayer {
         	grafo[auxCont] = state;
         	grafo[auxCont + 2] = 0.0;
         	grafo[auxCont + 3] = evaluacion(stateUtil, id);
-			auxCont += 4;
+        	grafo[auxCont + 4] = 0.0;
+			auxCont += 5;
 		}
 
         /*
@@ -117,31 +119,53 @@ public class Agent extends AbstractMultiPlayer {
             // Array de relevancias: indica cuanto de importante es cada estado para la hormiga
     		double [] relevancias = new double[acciones.size()];
     		double totalRelevancias = 0;
-    		for (int j = 3; j < grafo.length; j+=4) {
-    			relevancias[(j-3)/4] = pesoEvaluacion * (double)grafo[j] + pesoFeromonas * (double)grafo[j-1];
+    		for (int j = 0; j < grafo.length; j+=5) {
+    			relevancias[j/5] = pesoEvaluacion * (double)grafo[j+3] + pesoFeromonas * (double)grafo[j+2];
     			// Acumulamos los valores de relevancia
-    			totalRelevancias += relevancias[(j-3)/4];
+    			totalRelevancias += relevancias[j/5]; 
+    			System.out.println(j/5 + " rel - " + relevancias[j/5]);
     		}
-    		// Array de probabilidades: indica la probabilidad de que la hormiga pase por ese estado, de forma proporcional a la importancia del mismo
-    		double [] probabilidades = new double[acciones.size()];
-    		for(int j = 0; j < probabilidades.length; j++){
-    			probabilidades[j] = relevancias[j]/totalRelevancias;
-    		}
+    		
+    		  double [] probabilidades = new double[acciones.size()];
+    		  probabilidades[0] = relevancias[0]/totalRelevancias;
+    		  for(int j = 1; j < probabilidades.length; j++){
+    		   probabilidades[j] = probabilidades[j-1] + relevancias[j]/totalRelevancias;
+    		  }
+    		  
     		// Numero aleatorio para la decision
-    		double random = Math.random();
-    		double diff = 1.0;
-    		// Indice del estado al que se va a transitar
-    		int indiceMeta = 0;
-    		// Eleccion final del camino al que ir por parte de la hormiga
-    		for(int j = 0; j < probabilidades.length; j++){
-    			double diffAux = diff - random;
-    			if (diffAux <= diff){
-    				indiceMeta = j;
-    				diff = diffAux;
-    			}
-    		}
+    		  double aux = Math.random();
+    		  int indiceMeta = 0;
+    		  
+    		  for(int j = 0; j < probabilidades.length; j++){
+    		   if (aux <= probabilidades[j]){
+    			   indiceMeta = j;
+    		   }
+    		  }
+    		
+    		
+    		
+//    		// Array de probabilidades: indica la probabilidad de que la hormiga pase por ese estado, de forma proporcional a la importancia del mismo
+//    		double [] probabilidades = new double[acciones.size()];
+//    		for(int j = 0; j < probabilidades.length; j++){
+//    			probabilidades[j] = relevancias[j]/totalRelevancias;
+//    			System.out.println(j + " prob - " + probabilidades[j]);
+//    		}
+//    		// Numero aleatorio para la decision
+//    		double random = Math.random();
+//    		double diff = 1.0;
+//    		// Indice del estado al que se va a transitar
+//    		int indiceMeta = 0;
+//    		// Eleccion final del camino al que ir por parte de la hormiga
+//    		for(int j = 0; j < probabilidades.length; j++){
+//    			double diffAux = diff - random;
+//    			System.out.println("diff " + diffAux);
+//    			if (diffAux <= diff){
+//    				indiceMeta = j;
+//    				diff = diffAux;
+//    			}
+//    		}
 			// Aumentamos la feromona del camino que ha elegido la hormiga
-			grafo[(indiceMeta*4)-2] = (double)grafo[(indiceMeta*4)-2] + feromona;
+			grafo[(indiceMeta*5)+3] = (double)grafo[(indiceMeta*5)+3] + feromona;
 			
 			// Debug indiceMeta
 			System.out.println(indiceMeta);
