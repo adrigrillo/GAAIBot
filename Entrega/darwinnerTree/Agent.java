@@ -1,4 +1,4 @@
-package darwinnerEE1;
+package darwinnerTree;
 
 /**************************************************************************************************
  * Autores:
@@ -14,57 +14,46 @@ package darwinnerEE1;
 
 import core.game.StateObservationMulti;
 import core.player.AbstractMultiPlayer;
-import tools.ElapsedCpuTimer;
 import ontology.Types;
-import java.util.*;
+import tools.ElapsedCpuTimer;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Collections;
 
-public class Agent extends AbstractMultiPlayer {
-    
-    int posiblesMovimientos = 0;
-    final int tamPoblacion = 6;
-    final int muSize = 2;
-    final int lamSize = tamPoblacion - muSize;
-    final int profundidad = 30;
-    int playerID;
-    Random alt = new Random();
-
-    /**
-     * Clase utilizada para manipular los individuos en base a puntuacion. Esta clase
-     * tiene dos razones:
-     * - Poder ordenar la lista por puntuacion
-     * - Poder comparar dos individuos en base a su puntuacion
-     */
-    public class puntuacionIndividuo implements Comparable<puntuacionIndividuo> {
-        public puntuacionIndividuo(int x, double y) {
-            indIndividuo = x;
-            puntuacion = y;
-        }
-        public int compareTo(puntuacionIndividuo another) {
-            return (this.puntuacion > another.puntuacion) ? 1 : -1;
-        }
-        public int indIndividuo;
-        public double puntuacion;
-    }
+public class Agent extends AbstractMultiPlayer{
+    private ArrayList<Integer> posiblesMovimientos = new ArrayList<Integer>();
+    private int nPosiblesMovimientos;
+    private final int tamPoblacion = 6;
+    private final int muSize = 2;
+    private final int lamSize = tamPoblacion - muSize;
+    private final int profundidad = 30;
+    private int playerID;
+    private int indice = 0;
 
     /**
      * Clase que estara compuesta por el estado que se esta examinando
      * y la posicion de su antecesor, es decir, del movimiento que se puede realizar
      * en el turno actual */
-    public class Individuo_Antecesor {
-        public Individuo_Antecesor(StateObservationMulti individuo, int antecesor) {
+    public class Individuo_Antecesor implements Comparable<Individuo_Antecesor>{
+        public Individuo_Antecesor(StateObservationMulti individuo, int antecesor, double puntuacion) {
             estado = individuo;
             indAntecesor = antecesor;
+            puntuacion = puntuacion;
         }
         public int indAntecesor;
         public StateObservationMulti estado;
-    }
+        public double puntuacion;
+        public int compareTo(Individuo_Antecesor another){
+            return (this.puntuacion > another.puntuacion) ? 1 : -1;
+        }
 
+    }
     public Agent(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer, int playerID){
         // Dependiendo del juego se tiene un numero de acciones disponibles
-        posiblesMovimientos = stateObs.getAvailableActions().size();
+        nPosiblesMovimientos = stateObs.getAvailableActions().size();
+        for (int i = 0; i < nPosiblesMovimientos; i++)
+            posiblesMovimientos.add(i);
         this.playerID = playerID;
+        this.indice = 0;
     }
 
     public Types.ACTIONS act(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer) {
@@ -74,51 +63,59 @@ public class Agent extends AbstractMultiPlayer {
         // Creamos una poblacion con el estado actual
         ArrayList<Individuo_Antecesor> poblacion = new ArrayList<Individuo_Antecesor>();
         for (int i = 0; i < tamPoblacion; i++)
-            poblacion.add(new Individuo_Antecesor(stateObs.copy(), i));
-        /* Realizamos un movimiento aleatorio para cada individuo de la poblacion
-         * y guardamos el primer movimiento para aplicarlo en la partida */
+            poblacion.add(new Individuo_Antecesor(stateObs.copy(), i, 0));
+        /* La poblacion inicial esta compuesta por el conjunto de individuos formado
+         * por los posibles movimientos del juego, es decir, habra un individuo por
+         * cada movimiento */
         ArrayList<Types.ACTIONS> movimientos = new ArrayList<Types.ACTIONS>();
-        for (int i = 0; i < tamPoblacion; i++) {
-            int movimiento = alt.nextInt(posiblesMovimientos);
-            movimientos.add(stateObs.getAvailableActions().get(movimiento));
-            poblacion.get(i).estado.advance(stateObs.getAvailableActions().get(movimiento));
+        Collections.shuffle(posiblesMovimientos);
+        int x = 0;
+        for (int i = 0; i < tamPoblacion; i++){
+            movimientos.add(stateObs.getAvailableActions().get(posiblesMovimientos.get(x)));
+            poblacion.get(x).estado.advance(stateObs.getAvailableActions().get(posiblesMovimientos.get(x)));
+            if (++x == nPosiblesMovimientos)
+                x = 0;
         }
         int nGeneracion = 1;
         int mejorIndividuo = 0;
         double tiempoRestante = elapsedTimer.remainingTimeMillis();
-        ArrayList<puntuacionIndividuo> puntuacionEstado = new ArrayList<puntuacionIndividuo>();
         // Empezamos a explorar en profundidad hasta que nos acabemos sin tiempo o lleguemos al maximo
         while ( nGeneracion < profundidad && tiempoRestante > 5.0 ) {
-            puntuacionEstado.clear();
             // Evaluamos cada individuo
             for (int i = 0; i < tamPoblacion; i++) {
-                puntuacionEstado.add(new puntuacionIndividuo(i, HeuristicaSample.stateEval(poblacion.get(i).estado,
-                        this.playerID)));
+                // Aqui podemos elegir que heuristica usar
+                double puntuacion = HeuristicaAvara.stateEval(poblacion.get(i).estado, this.playerID);
+                //double puntuacion = HeuristicaSample.stateEval(poblacion.get(i).estado, this.playerID);
+                poblacion.get(i).puntuacion += puntuacion;
                 tiempoRestante = elapsedTimer.remainingTimeMillis();
                 if (tiempoRestante < 3.0) break;
             }
             // Ordenamos las puntuaciones por valor y cogemos el mejor individuo
-            Collections.sort(puntuacionEstado, Collections.reverseOrder());
-            mejorIndividuo = poblacion.get(puntuacionEstado.get(0).indIndividuo).indAntecesor;
+            Collections.sort(poblacion, Collections.reverseOrder());
+            mejorIndividuo = poblacion.get(indice=0).indAntecesor;
             tiempoRestante = elapsedTimer.remainingTimeMillis();
             if (tiempoRestante < 3.0) break;
-            // Sacamos los hijos del mejor individuo y los meteremos en
-            // la poblacion
-            for (int i = 0; i < lamSize; i++){
-                // Creamos el individuo con el estado del padre
-                Individuo_Antecesor nuevoIndividuo = new Individuo_Antecesor(poblacion.get(puntuacionEstado.get(0).indIndividuo).estado,
-                        mejorIndividuo);
-                // Elegimos una accion sucesora al azar
-                nuevoIndividuo.estado.advance(stateObs.getAvailableActions().get(alt.nextInt(posiblesMovimientos)));
-                // Lo añadimos a la poblacion
-                poblacion.add(nuevoIndividuo);
+            // Sacamos los hijos de los mejores individuos y los meteremos en la poblacion
+            int j = 0;
+            Collections.shuffle(posiblesMovimientos);
+            while (poblacion.size() < tamPoblacion + lamSize){
+                Individuo_Antecesor mejor = poblacion.get(0);
+                Individuo_Antecesor nuevoIndividuo = new Individuo_Antecesor(mejor.estado, mejorIndividuo, mejor
+                        .puntuacion);
+                nuevoIndividuo.estado.advance(stateObs.getAvailableActions().get(posiblesMovimientos.get(0)));
                 tiempoRestante = elapsedTimer.remainingTimeMillis();
-                if (tiempoRestante < 3.0) break;
+                if (tiempoRestante < 3.0)
+                    break;
+                j++;
+                if (j == posiblesMovimientos.size()) {
+                    j = 0;
+                    indice++;
+                }
             }
             // Eliminamos los lambda peores individuos de la poblacion original
             ArrayList<Individuo_Antecesor> eliminar = new ArrayList<Individuo_Antecesor>();
             for (int i = muSize; i < tamPoblacion; i++)
-                eliminar.add(poblacion.get(puntuacionEstado.get(i).indIndividuo));
+                eliminar.add(poblacion.get(i));
             for (int i = 0; i < lamSize; i++)
                 poblacion.remove(eliminar.get(i));
             nGeneracion++;

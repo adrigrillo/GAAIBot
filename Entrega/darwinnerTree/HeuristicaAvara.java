@@ -1,4 +1,4 @@
-package darwinnerEE1;
+package darwinnerTree;
 
 import core.game.Observation;
 import core.game.StateObservationMulti;
@@ -60,7 +60,7 @@ public class HeuristicaAvara {
                 if (portalPositions[i].size() > 0) {
                     Vector2d closestPorPos = portalPositions[i].get(0).position;
                     double distToPortal = myPosition.dist(closestPorPos);
-                    // the farther away it is, the worst the stateVal will be
+                    // Cuanto más lejos este peor va a ser la evaluacion
                     stateVal -= distToPortal / 5;
                 }
             }

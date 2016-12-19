@@ -1,4 +1,4 @@
-package darwinnerTree;
+package darwinnerSample;
 
 import core.game.Observation;
 import core.game.StateObservationMulti;

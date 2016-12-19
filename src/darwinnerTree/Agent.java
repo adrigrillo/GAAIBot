@@ -14,8 +14,6 @@ package darwinnerTree;
 
 import core.game.StateObservationMulti;
 import core.player.AbstractMultiPlayer;
-//import darwinnerTree.HeuristicaAvara;
-//import darwinnerTree.HeuristicaSample;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import java.util.ArrayList;
@@ -85,7 +83,9 @@ public class Agent extends AbstractMultiPlayer{
         while ( nGeneracion < profundidad && tiempoRestante > 5.0 ) {
             // Evaluamos cada individuo
             for (int i = 0; i < tamPoblacion; i++) {
-                double puntuacion = HeuristicaSample.stateEval(poblacion.get(i).estado, this.playerID);
+                // Aqui podemos elegir que heuristica usar
+                double puntuacion = HeuristicaAvara.stateEval(poblacion.get(i).estado, this.playerID);
+                //double puntuacion = HeuristicaSample.stateEval(poblacion.get(i).estado, this.playerID);
                 poblacion.get(i).puntuacion += puntuacion;
                 tiempoRestante = elapsedTimer.remainingTimeMillis();
                 if (tiempoRestante < 3.0) break;

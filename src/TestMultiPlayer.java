@@ -44,7 +44,7 @@ public class TestMultiPlayer
         // Controlador de Colonia de Hormigas
         String darwinnerACO = "darwinnerACO.Agent";
         // Controlador de (mu, lambda)- EE
-        String darwinnerEE = "darwinnerEE1.Agent";
+        String darwinnerEE = "darwinnerRandom.Agent";
         String darwinnerTree = "darwinnerTree.Agent";
 
         /*
@@ -81,7 +81,7 @@ public class TestMultiPlayer
          * Game and level to play
          */
         // Indice del juego a ejecutar
-        int gameIdx = 34;
+        int gameIdx = 14;
         // Indice del nivel del juego
         int levelIdx = 0; //level names from 0 to 4 (game_lvlN.txt).
         // Seleccion de juego y nivel

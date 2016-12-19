@@ -1,4 +1,4 @@
-package darwinnerEE1;
+package darwinnerTree;
 
 /**************************************************************************************************
  * Autores:
@@ -19,7 +19,7 @@ import tools.Vector2d;
 
 import java.util.ArrayList;
 
-public class HeuristicaSample{
+public class HeuristicaSample {
     public static double stateEval(StateObservationMulti stateObs, int playerID) {
         double stateVal = 0;
         Vector2d avatarPosition = stateObs.getAvatarPosition(playerID);
@@ -72,8 +72,8 @@ public class HeuristicaSample{
         for (ArrayList<Observation> portals : portales) {
             if(portals.size() > 0)
             {
-                minObjectPortal   =  portals.get(0).position; //This is the closest portal
-                minDistancePortal =  portals.get(0).sqDist;   //This is the (square) distance to the closest portal
+                minObjectPortal   =  portals.get(0).position; //Portal mas cercano
+                minDistancePortal =  portals.get(0).sqDist;   //Distancia al portal mas cercano
             }
         }
 
