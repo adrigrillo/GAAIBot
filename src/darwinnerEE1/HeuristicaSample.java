@@ -18,7 +18,6 @@ import ontology.Types;
 import tools.Vector2d;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class HeuristicaSample{
     public static double stateEval(StateObservationMulti stateObs, int playerID) {

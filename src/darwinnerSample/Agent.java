@@ -16,10 +16,6 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.TimeoutException;
 
-import controllers.multiPlayer.heuristics.StateHeuristicMulti;
-import controllers.multiPlayer.heuristics.WinScoreHeuristic;
-import darwinnerEE1.HeuristicaAvara;
-import darwinnerEE1.HeuristicaSample;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import tools.Utils;
@@ -44,7 +40,8 @@ public class Agent extends AbstractMultiPlayer{
     private final HashMap<Types.ACTIONS, Integer>[] r_action_mapping;
     protected Random randomGenerator;
 
-    private int numSimulations;
+    @SuppressWarnings("unused")
+	private int numSimulations;
 
     private int id, oppID, no_players;
 
@@ -54,7 +51,8 @@ public class Agent extends AbstractMultiPlayer{
      * @param stateObs     state observation of the current game.
      * @param elapsedTimer Timer for the controller creation.
      */
-    public Agent(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer, int playerID) {
+    @SuppressWarnings("unchecked")
+	public Agent(StateObservationMulti stateObs, ElapsedCpuTimer elapsedTimer, int playerID) {
         id = playerID;
         oppID = (id + 1) % stateObs.getNoPlayers();
         // Saca el numero de jugadores en la partida
@@ -85,7 +83,8 @@ public class Agent extends AbstractMultiPlayer{
 
 
     double microbial_tournament(int[][] actionGenome, StateObservationMulti stateObs, HeuristicaAvara heuristic, int playerID) throws TimeoutException {
-        int a, b, c, W, L;
+        @SuppressWarnings("unused")
+		int a, b, c, W, L;
         int i;
 
 
@@ -178,10 +177,8 @@ public class Agent extends AbstractMultiPlayer{
         }
 
         numSimulations++;
-        double score = Math.pow(GAMMA, depth) * heuristic.stateEval(stateObs, id);
+        double score = Math.pow(GAMMA, depth) * HeuristicaAvara.stateEval(stateObs, id);
         return score;
-
-
     }
 
     private Types.ACTIONS microbial(StateObservationMulti stateObs, int maxdepth, HeuristicaAvara heuristic, int iterations) {

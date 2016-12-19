@@ -14,8 +14,8 @@ package darwinnerTree;
 
 import core.game.StateObservationMulti;
 import core.player.AbstractMultiPlayer;
-import darwinnerTree.HeuristicaAvara;
-import darwinnerTree.HeuristicaSample;
+//import darwinnerTree.HeuristicaAvara;
+//import darwinnerTree.HeuristicaSample;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import java.util.ArrayList;

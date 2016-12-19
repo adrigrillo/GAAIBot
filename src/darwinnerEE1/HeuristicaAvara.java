@@ -27,8 +27,6 @@ public class HeuristicaAvara {
 
         double stateVal = 0;
 
-        int oppID = (playerID + 1) % stateObs.getNoPlayers();
-
         double score = stateObs.getGameScore();
         Vector2d myPosition = stateObs.getAvatarPosition();
         ArrayList<Observation>[] npcPositions = stateObs.getNPCPositions(myPosition);
